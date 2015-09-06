@@ -12,9 +12,8 @@
  */
 
 Route::get('/', function () {
-    return view('login_page');
+    return View::make('index_site');
 });
-
 Route::get('/players', 'PlayerController@index');
 Route::post('/players', 'Auth\AuthController@postRegister');
 Route::get('/players/{id}', 'PlayerController@show');

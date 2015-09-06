@@ -1,0 +1,30 @@
+<div class="inline">
+    {{city}}<br>
+    <h1>{{city.Name}}</h1>
+    <a href ng-click="selectBuild()"><h1>Build</h1></a>
+    <a href ng-click="selectResources()"><h1>Resources</h1></a>
+</div>
+<h2>
+    Wood: {{city.resource.wood}} {{ round(population.wood * city.income.wood)}}
+    Gold: {{city.resource.gold}} {{round(population.gold * city.income.gold)}}
+    Stone: {{city.resource.stone}} {{round(population.stone * city.income.stone)}}
+    Silver: {{city.resource.silver}} {{round(population.silver * city.income.silver)}}
+    Platinum: {{city.resource.platinum}} {{round(population.platinum * city.income.platinum)}}
+    Food: {{city.resource.food}} {{round(population.food * city.income.food)}}
+    Population: {{population.count}} 
+
+</h2>
+<br>
+<div id="cityDetail"> 
+    <div ng-include src="'webgame-client/public_html/partials/building/list.html'"></div>
+</div>
+<div class="col-md-6" ng-switch on="selection">
+    <div ng-switch-when="build">
+        <h1>Buildings to buy</h1>
+        <div ng-include src="'webgame-client/public_html/partials/building/list_build.html'"></div>
+    </div>
+    <div ng-switch-when="resources">
+        <h1>Population distribution</h1>
+        <div ng-include src="'webgame-client/public_html/partials/resource/population.html'"></div>
+    </div>
+</div>

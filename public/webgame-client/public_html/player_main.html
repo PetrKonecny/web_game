@@ -1,0 +1,15 @@
+Player id: {{player.id}}
+Username: {{player.username}}
+Armies: {{player.armies}}
+Cities: {{player.cities}}
+<div class="col-md-3">
+    <h1>Your armies:</h1>
+    <div ng-include src="'webgame-client/public_html/partials/army/list.html'"></div>
+    <h1>Your cities:</h1>
+    <div ng-include src="'webgame-client/public_html/partials/city/list.html'"></div>
+</div>
+<div ng-controller="MapCtrl" class="col-md-9">
+    <button type="button" class="btn btn-primary btn-lg"  ng-click="clickedMinus()">-</button>
+    <button type="button" class="btn btn-primary btn-lg"  ng-click="clickedPlus()">+</button>
+    <div><canvas id="canvas" width="300" height="180"></canvas></div>
+</div>

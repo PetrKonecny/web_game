@@ -1,0 +1,28 @@
+{{unitsToBuy}}
+<div class = panel-body>
+    <h2>You have to be in a city to buy units</h2>
+</div>
+<div ng-repeat='unit in unitsToBuy' class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>{{unit.Name}}</strong></p>
+            Hp: {{unit.Hp}}<br />
+            Dmg: {{unit.Dmg}}<br />
+            Good against: {{unit.Pref_target}}<br/>
+        </div>
+        <div class="panel-info">
+            <p><strong>Cost</strong></p>
+            Wood: {{unit.resource.wood}}<br />
+            Stone: {{unit.resource.stone}}<br />
+            Gold: {{unit.resource.gold}}<br/>
+            Silver: {{unit.resource.silver}}<br />
+            Platinum: {{unit.resource.platinum}}<br />
+            Food: {{unit.resource.food}}<br/>
+        </div>
+    </div>
+    <div class="panel-body">
+        <rzslider rz-slider-model="unit.countToBuy"  rz-slider-ceil="getCeiling(unit)"></rzslider>
+        <button type="button" class="btn btn-primary btn-lg"  ng-disabled="disableButton" ng-click="clickedBuy()">Buy</button>
+    </div>
+</div>
+</div>

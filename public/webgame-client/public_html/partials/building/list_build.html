@@ -1,0 +1,14 @@
+
+<div ng-repeat='building in buildingsToBuild' class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>{{building.Name}}</strong></p>
+            <button type="button" class="btn btn-primary btn-lg" ng-disabled="disableButton" ng-click="clickedBuild(building.Id)">Build</button>
+        </div>
+        <div class="panel-more1">
+            Gold: {{building.resource.gold}}
+            Wood: {{building.resource.wood}}
+            Stone: {{building.resource.stone}}
+        </div>
+    </div>
+</div>

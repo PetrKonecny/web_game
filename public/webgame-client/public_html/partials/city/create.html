@@ -1,0 +1,14 @@
+<div class="col-md-6 col-md-offset-3">
+    <h2>Create new city</h2>
+    <div ng-show="error" class="alert alert-danger">{{error}}</div>
+    <form name="form" ng-submit="sendCreateRequest()" role="form">
+        <div class="form-group" ng-class="{ 'has-error': form.name.$dirty && form.name.$error.required }">
+            <label for="name">City name</label>
+            <input type="text" name="name" id="name" class="form-control" ng-model="city.name" required />
+            <span ng-show="form.name.$dirty && form.name.$error.required" class="help-block">City name is required</span>
+        </div>
+        <div class="form-actions">
+            <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">Create</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,12 @@
+<h1>{{targetBefore.Army_name}}</h1>
+
+<div ng-repeat='unit in targetBefore.units' class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>{{unit.Name}}</strong></p>
+            <p>Count before: {{unit.pivot.Unit_count}} </p>
+            <p>Final count: {{getLostCount(unit.Id, army.units)}} </p>
+            <p>Lost: {{unit.pivot.Unit_count - getLostCount(unit.Id, army.units)}} </p>
+        </div>
+    </div>
+</div>

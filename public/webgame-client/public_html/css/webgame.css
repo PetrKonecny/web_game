@@ -1,0 +1,18 @@
+.inline h1 {
+    display: inline-block;
+}
+
+.panel-info, .panel-rating, .panel-more1 {
+    float: left;
+    margin: 0 10px;
+}
+
+canvas {
+    width: 100%;
+    height: auto;
+}
+
+.stick {
+    z-index: 100;
+    background-color: #00b3ee;
+}

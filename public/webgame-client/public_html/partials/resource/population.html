@@ -1,0 +1,56 @@
+<h2>Unemployed: {{getUnemployed()}}</h2>
+<button type="button" class="btn btn-primary btn-lg"  ng-disabled="disableButton" ng-click="clickedSavePopulation()">Save</button>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>Gold</strong></p>
+            <p><strong>{{population.gold}}</strong></p>
+        </div>
+        <rzslider rz-slider-model="population.gold" rz-slider-ceil="goldMax"></rzslider>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>Wood</strong></p>
+            <p><strong>{{population.wood}}</strong></p>
+        </div>
+        <rzslider rz-slider-model="population.wood" rz-slider-ceil="woodMax"></rzslider>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>Stone</strong></p>
+            <p><strong>{{population.stone}}</strong></p>
+        </div>
+        <rzslider rz-slider-model="population.stone" rz-slider-ceil="stoneMax"></rzslider>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>Food</strong></p>
+            <p><strong>{{population.food}}</strong></p>
+        </div>
+        <rzslider rz-slider-model="population.food" rz-slider-ceil="foodMax"></rzslider>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>Silver</strong></p>
+            <p><strong>{{population.silver}}</strong></p>
+        </div>
+        <rzslider rz-slider-model="population.silver" rz-slider-ceil="silverMax"></rzslider>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>Platinum</strong></p>
+            <p><strong>{{population.platinum}}</strong></p>
+        </div>
+        <rzslider rz-slider-model="population.platinum" rz-slider-ceil="platMax"></rzslider>
+    </div>
+</div>

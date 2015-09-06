@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<div ng-repeat='army in armies' class="panel panel-default">
+    <a href ng-click="armyClicked(army.Id)">
+        <div class="panel-body">
+            <div class="panel-info">
+                <p><strong>{{army.Army_name}}</strong></p>                      
+            </div>
+            <div class="panel-body">
+                <button type="button" class="btn btn-primary btn-lg" ng-click="clickedAttack(army.Id)">Attack</button>
+            </div>
+        </div>
+    </a>
+</div>

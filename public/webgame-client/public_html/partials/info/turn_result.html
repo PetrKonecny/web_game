@@ -1,0 +1,22 @@
+
+
+<div ng-repeat='turn in data.report.turns' class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>
+                    Turn for {{turn.attackerName}}
+                </strong></p>                      
+            <div ng-repeat='line in turn.lines'>
+                <p><strong>
+                        {{line.subjectCount}} of
+                        {{line.subject}} attacked 
+                        {{line.targetCountBefore}} of
+                        {{line.target}} for
+                        {{line.dmg}} damage and killed 
+                        {{line.targetCountBefore - line.targetCountAfter}} of them,
+                        {{line.attacked}} of attackers attacked
+                    </strong></p>                      
+            </div>
+        </div>
+    </div>
+</div>

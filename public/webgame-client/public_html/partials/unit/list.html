@@ -1,0 +1,12 @@
+
+<div ng-repeat='unit in army.units' class="panel panel-default">
+    <div class="panel-body">
+        <div class="panel-info">
+            <p><strong>{{unit.Name}}</strong></p>
+            <p>Count: {{unit.pivot.Unit_count}}<br />
+                Hp: {{unit.Hp}}<br />
+                Dmg: {{unit.Dmg}}<br />
+                Good against: {{unit.Pref_target}}<br/></p>
+        </div>
+    </div>
+</div>

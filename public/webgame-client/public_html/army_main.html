@@ -1,0 +1,33 @@
+{{data}}
+{{army}}
+{{resource}}
+{{totalPrice}}
+<div class="stick" sticky>
+    <h2>
+        Wood: {{resource.wood}} 
+        Gold: {{resource.gold}} 
+        Stone: {{resource.stone}} 
+        Silver: {{resource.silver}} 
+        Platinum: {{resource.platinum}}
+        Food: {{resource.food}}
+    </h2>
+</div>
+<div class="inline">
+    <h1>{{army.Army_name}}</h1>
+    <a href ng-click="selectFight()"><h1>Fight</h1></a>
+    <a href ng-click="selectBuy()"><h1>Buy</h1></a>
+    <a href ng-click="selectMove()"><h1>Move</h1></a>
+</div>
+<div id="armyDetail" class="col-md-12"> 
+    <div ng-include src="'webgame-client/public_html/partials/unit/list.html'"></div>
+</div>
+<div class="col-md-6" ng-switch on="selection">
+    <div ng-switch-when="fight">
+        <h1>Armies to attack</h1>
+        <div ng-include src="'webgame-client/public_html/partials/army/list_attack.html'"></div>
+    </div>
+    <div ng-switch-when="buy">
+        <h1>Units to buy</h1>
+        <div ng-include src="'webgame-client/public_html/partials/unit/list_buy.html'"></div>
+    </div>
+</div>
