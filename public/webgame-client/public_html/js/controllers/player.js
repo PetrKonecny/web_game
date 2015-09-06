@@ -26,7 +26,7 @@ playerControllers
             }])
         .controller('ShowSessionCtrl', ['$scope', '$http',
             function ($scope, $http) {
-                $http.get('http://94.112.69.214:8080/session', $scope.player)
+                $http.get('/session', $scope.player)
                         .success(sendLoginCallback);
 
                 function sendLoginCallback($data) {
@@ -35,7 +35,7 @@ playerControllers
             }])
         .controller('PlayerLogoutCtrl', ['$scope', '$http', 'Session', '$location',
             function ($scope, $http, Session, $location) {
-                $http.get('http://94.112.69.214:8080/logout')
+                $http.get('/logout')
                         .success(sendLogoutCallback);
 
                 function sendLogoutCallback($data) {

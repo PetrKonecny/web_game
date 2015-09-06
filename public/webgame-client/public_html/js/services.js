@@ -1,6 +1,6 @@
 angular.module('webgameServices', [])
         .factory('Army', function ($resource) {
-            return $resource('http://94.112.69.214:8080/armies/:id/:action', {id: '@Id'}, {
+            return $resource('/armies/:id/:action', {id: '@Id'}, {
                 update: {
                     method: 'PUT'
                 },
@@ -10,7 +10,7 @@ angular.module('webgameServices', [])
             });        
         })
         .factory('Player', function ($resource) {
-            return $resource('http://94.112.69.214:8080/players/:id', {id: '@Id'}, {
+            return $resource('/players/:id', {id: '@Id'}, {
                 update: {
                     method: 'PUT'
                 }
@@ -18,7 +18,7 @@ angular.module('webgameServices', [])
 
         })
         .factory('Unit', function ($resource) {
-            return $resource('http://94.112.69.214:8080/units/:id', {id: '@Id'}, {
+            return $resource('/units/:id', {id: '@Id'}, {
                 update: {
                     method: 'PUT'
                 }
@@ -26,7 +26,7 @@ angular.module('webgameServices', [])
 
         })
         .factory('Building', function ($resource) {
-            return $resource('http://94.112.69.214:8080/buildings/:id', {id: '@Id'}, {
+            return $resource('/buildings/:id', {id: '@Id'}, {
                 update: {
                     method: 'PUT'
                 }
@@ -34,7 +34,7 @@ angular.module('webgameServices', [])
 
         })
         .factory('City', function ($resource) {
-            return $resource('http://94.112.69.214:8080/cities/:id', {id: '@Object_id'}, {
+            return $resource('/cities/:id', {id: '@Object_id'}, {
                 update: {
                     method: 'PUT'
                 }
@@ -42,7 +42,7 @@ angular.module('webgameServices', [])
 
         })
         .factory('Population', function ($resource) {
-            return $resource('http://94.112.69.214:8080/population/:id', {id: '@city_id'}, {
+            return $resource('/population/:id', {id: '@city_id'}, {
                 update: {
                     method: 'PUT'
                 }
@@ -50,7 +50,7 @@ angular.module('webgameServices', [])
 
         })
         .factory('Position', function ($resource) {
-            return $resource('http://94.112.69.214:8080/positions/:id/:action', {id: '@id'}, {
+            return $resource('/positions/:id/:action', {id: '@id'}, {
                 update: {
                     method: 'PUT'
                 },
@@ -61,7 +61,7 @@ angular.module('webgameServices', [])
 
         })
         .factory('Resource', function ($resource) {
-            return $resource('http://94.112.69.214:8080/resources/:id', {id: '@id'}, {
+            return $resource('/resources/:id', {id: '@id'}, {
                 update: {
                     method: 'PUT'
                 }
@@ -104,11 +104,11 @@ angular.module('webgameServices', [])
             }])
         .factory('LoginService', ['Session', '$http', function (Session, $http) {
                 function login($user) {
-                    var resp = $http.post('http://94.112.69.214:8080/login', $user);
+                    var resp = $http.post('/login', $user);
                     return resp;
                 }
                 function logout() {
-                    var resp = $http.get('http://94.112.69.214:8080/logout');
+                    var resp = $http.get('/logout');
                 }
 
                 return {
