@@ -21,7 +21,7 @@ class TestController extends Controller {
      * @return Response
      */
     public function index() {
-
+        return 'Hello';
         $armies = Army::lists('Army_name', 'Id');
         return view('test', ['armies' => $armies]);
     }
