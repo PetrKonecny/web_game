@@ -43,8 +43,11 @@ playerControllers
                     $location.path('/login')
                 }
             }])
-        .controller('PlayerMainCtrl', ['$scope', 'Session', 'Player', '$location', '$modal', 'SharedData',
-            function ($scope, Session, Player, $location, $modal, SharedData) {
+        .controller('PlayerMainCtrl', ['$scope', 'Session', 'Player', '$location', '$modal', 'SharedData', '$http', '$interval',
+            function ($scope, Session, Player, $location, $modal, SharedData, $http, $interval) {
+                $http.get('/queue/recount').then(function (data) {
+                    startTimer(data.data.recountTime - data.data.serverTime);
+                });
                 $scope.player = Session.get();
                 Player.get({id: $scope.player.id}).$promise.then(
                         function (value) {
@@ -56,7 +59,7 @@ playerControllers
                         }
                 );
 
-                $scope.armyClicked = function ($id) {              
+                $scope.armyClicked = function ($id) {
                     $location.path('armies/' + $id);
                 }
                 $scope.cityClicked = function ($id) {
@@ -65,4 +68,22 @@ playerControllers
                 $scope.newArmyClicked = function () {
                     $modal.open('/partials/army/create.html');
                 }
+
+                function startTimer(duration) {
+                    var timer = duration, minutes, seconds;
+                    $interval(function () {
+                        minutes = parseInt(timer / 60, 10);
+                        seconds = parseInt(timer % 60, 10);
+
+                        minutes = minutes < 10 ? "0" + minutes : minutes;
+                        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                        $scope.timer = minutes + ":" + seconds;
+
+                        if (--timer < 0) {
+                            timer = duration;
+                        }
+                    }, 1000);
+                }
+
             }]);

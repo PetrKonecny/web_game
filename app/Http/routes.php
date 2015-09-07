@@ -58,3 +58,5 @@ Route::get('/positions/{id}', 'PositionController@show');
 Route::get('/positions/{id}/availableUnits', 'PositionController@getAvailableUnits');
 
 Route::get('/resources/{id}', 'ResourceController@show');
+
+Route::get('/queue/recount', 'QueueController@getNextRecount');
