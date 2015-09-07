@@ -68,6 +68,10 @@ class TestController extends Controller {
     public function edit($id) {
         //
     }
+    
+    public function runTestCommand(){
+        \Illuminate\Support\Facades\Artisan::call('turn:resolve');
+    }
 
     /**
      * Update the specified resource in storage.
@@ -80,8 +84,6 @@ class TestController extends Controller {
     }
 
     public function recount() {
-        $command = new ResolveTurn();
-        return $command->processCityResources();
     }
 
     /**

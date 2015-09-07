@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Population;
 use App\Http\Controllers\Controller;
+use App\Jobs\ResolveTurn;
 
-class PopulationController extends Controller {
+class QueueController extends Controller {
 
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class PopulationController extends Controller {
      * @return Response
      */
     public function index() {
-        return Population::all();
+        //
     }
 
     /**
@@ -43,7 +43,7 @@ class PopulationController extends Controller {
      * @return Response
      */
     public function show($id) {
-        return Population::find($id);
+        //
     }
 
     /**
@@ -62,15 +62,8 @@ class PopulationController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function update($id, Request $request) {
-        $population = Population::find($id);
-        $population->gold = $request->input('gold');
-        $population->wood = $request->input('wood');
-        $population->stone = $request->input('stone');
-        $population->food = $request->input('food');
-        $population->silver = $request->input('silver');
-        $population->platinum = $request->input('platinum');
-        $population->save();
+    public function update($id) {
+        //
     }
 
     /**
@@ -81,6 +74,13 @@ class PopulationController extends Controller {
      */
     public function destroy($id) {
         //
+    }
+
+    public function scheduleForDay() {
+        for ($i = 1; $i <= 5; $i++) {
+            $job = (new ResolveTurn())->delay($i*60);
+            $this->dispatch($job);
+        }
     }
 
 }

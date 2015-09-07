@@ -3,15 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/Petr2/Documents/webgame/config/database.php</file>
             <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/routes.php</file>
+            <file>file:/C:/Users/Petr2/Documents/webgame/vendor/laravel/framework/src/Illuminate/Foundation/Auth/AuthenticatesAndRegistersUsers.php</file>
             <file>file:/C:/Users/Petr2/Documents/webgame/config/app.php</file>
-            <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/Controllers/Controller.php</file>
-            <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/Controllers/ArmyController.php</file>
-            <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/Controllers/PositionController.php</file>
-            <file>file:/C:/Users/Petr2/Documents/webgame/app/Resource.php</file>
-            <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/Controllers/ResourceController.php</file>
-            <file>file:/C:/Users/Petr2/Documents/webgame/app/CityEffectApplier.php</file>
-            <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/Controllers/TestController.php</file>
+            <file>file:/C:/Users/Petr2/Documents/webgame/vendor/laravel/framework/src/Illuminate/Foundation/Auth/AuthenticatesUsers.php</file>
+            <file>file:/C:/Users/Petr2/Documents/webgame/vendor/laravel/framework/src/Illuminate/Foundation/Auth/RegistersUsers.php</file>
+            <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/Controllers/PlayerController.php</file>
+            <file>file:/C:/Users/Petr2/Documents/webgame/config/view.php</file>
+            <file>file:/C:/Users/Petr2/Documents/webgame/app/Http/Controllers/Auth/AuthController.php</file>
         </group>
     </open-files>
 </project-private>

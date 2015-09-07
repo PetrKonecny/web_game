@@ -37,14 +37,17 @@ Route::get('/cities/{id}', 'CityController@show');
 Route::get('/cities/{id}/get_buildings', 'CityController@getBuildingsForCity');
 Route::put('/cities/{id}', 'CityController@update');
 
+Route::get('/population', 'PopulationController@index');
 Route::put('/population/{id}', 'PopulationController@update');
 Route::get('/population/{id}', 'PopulationController@show');
 
 Route::get('/test', 'TestController@index');
-Route::get('/test2', 'TestController@recount');
+//Route::get('/test2', 'TestController@recount');
 //Route::get('/test3', 'TestController@generateMap');
 Route::get('/test4', 'TestController@getMap');
 Route::get('/test5', 'TestController@push');
+Route::get('/test6', 'TestController@runTestCommand');
+
 
 Route::get('/session', 'PlayerController@showSession');
 Route::post('/login', 'Auth\AuthController@postLogin');
