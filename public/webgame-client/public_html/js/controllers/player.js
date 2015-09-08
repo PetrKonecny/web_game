@@ -45,19 +45,9 @@ playerControllers
             }])
         .controller('PlayerMainCtrl', ['$scope', 'Session', 'Player', '$location', '$modal', 'SharedData', '$http', '$interval',
             function ($scope, Session, Player, $location, $modal, SharedData, $http, $interval) {
-                $http.get('/queue/recount').then(function (data) {
-                    startTimer(data.data.recountTime - data.data.serverTime);
-                });
+
                 $scope.player = Session.get();
-                Player.get({id: $scope.player.id}).$promise.then(
-                        function (value) {
-                            console.log(value);
-                            SharedData.set(value);
-                            $scope.player = value;
-                            $scope.armies = value.armies;
-                            $scope.cities = value.cities;
-                        }
-                );
+                refreshMain();
 
                 $scope.armyClicked = function ($id) {
                     $location.path('armies/' + $id);
@@ -68,22 +58,72 @@ playerControllers
                 $scope.newArmyClicked = function () {
                     $modal.open('/partials/army/create.html');
                 }
+                $scope.getTimerMessage = function (timer) {
+                    if (timer == null)
+                        return;
+                    return "Army moves in " + timer.sec;
+                }
 
-                function startTimer(duration) {
-                    var timer = duration, minutes, seconds;
-                    $interval(function () {
-                        minutes = parseInt(timer / 60, 10);
-                        seconds = parseInt(timer % 60, 10);
+                function refreshMain(value) {
+                    Player.get({id: $scope.player.id}).$promise.then(
+                            function (value) {
+                                SharedData.set(value);
+                                $scope.player = value;
+                                $scope.armies = value.armies;
+                                $scope.cities = value.cities;
+                                setArmyMoveTimers();
+                            }
+                    );
+                }
 
-                        minutes = minutes < 10 ? "0" + minutes : minutes;
-                        seconds = seconds < 10 ? "0" + seconds : seconds;
+                var refreshRecount = function () {
+                    $http.get('/queue/recount').then(function (data) {
+                        var n = data.data.recountTime - data.data.serverTime;
+                        $scope.timer = new Object();
+                        new Countdown($scope, n, $scope.timer, refreshRecount).start();
+                    });
+                };
 
-                        $scope.timer = minutes + ":" + seconds;
+                refreshRecount();
 
-                        if (--timer < 0) {
-                            timer = duration;
+                function setArmyMoveTimers() {
+                    var n = Math.round(new Date().getTime() / 1000);
+                    for (i = 0; i < $scope.armies.length; i++) {
+                        if ($scope.armies[i].position.move_at != null) {
+                            $scope.armies[i].timer = new Object();
+                            new Countdown($scope, $scope.armies[i].position.move_at - n, $scope.armies[i].timer).start();
                         }
-                    }, 1000);
+                    }
+                }
+
+                function Countdown(scope, duration, display, callback) {
+                    var timer,
+                            instance = this
+
+
+                    function decrementCounter() {
+                        if (!$scope.refreshEvents) {
+                            instance.stop();
+                        }
+                        if (display.sec === 0) {
+                            instance.stop();
+                            return;
+                        }
+                        display.sec--;
+                        if (display.sec === 0) {
+                            callback();
+                        }
+                    }
+
+                    this.start = function () {
+                        clearInterval(timer);
+                        display.sec = duration;
+                        timer = $interval(decrementCounter, 1000);
+                    };
+
+                    this.stop = function () {
+                        clearInterval(timer);
+                    }
                 }
 
             }]);

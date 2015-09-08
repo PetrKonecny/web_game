@@ -7,8 +7,10 @@ use App\Position;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\City;
+use Log;
 use App\Unit;
 use App\ObjectWrapper;
+use App\Jobs\MoveArmy;
 
 class PositionController extends Controller {
 
@@ -66,11 +68,14 @@ class PositionController extends Controller {
      * @return Response
      */
     public function update($id, Request $request) {
+        $delay = 240;
         $position = Position::find($id);
-        $position->x = $request->input('x');
-        $position->y = $request->input('y');
+        $position->move_to_x = $request->input('x');
+        $position->move_to_y = $request->input('y');
+        $job = (new MoveArmy($position))->delay($delay)->onQueue('moves');
+        $this->dispatch($job);
+        $position->move_at = round(microtime(true)) + $delay;
         $position->save();
-        return $position;
     }
 
     /**

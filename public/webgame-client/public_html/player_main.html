@@ -2,7 +2,8 @@ Player id: {{player.id}}
 Username: {{player.username}}
 Armies: {{player.armies}}
 Cities: {{player.cities}}
-<h1>Resource recount in:{{timer}}</h1>
+<h1>Resource recount in:{{timer.sec}}</h1>
+{{getTimer()}}
 <div class="col-md-3">
     <h1>Your armies:</h1>
     <div ng-include src="'webgame-client/public_html/partials/army/list.html'"></div>

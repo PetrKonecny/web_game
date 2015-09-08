@@ -4,7 +4,7 @@ mapControllers
             function ($scope, $http, Session, Player, Position) {
 
 
-                $http.get('http://94.112.69.214:8080/test4')
+                $http.get('/test4')
                         .success(function ($data) {
                             $scope.map = angular.fromJson($data);
                             drawMap();
