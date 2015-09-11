@@ -7,7 +7,7 @@ angular.module('webgameServices', [])
                 buyUnits: {
                     method: 'PUT'
                 }
-            });        
+            });
         })
         .factory('Player', function ($resource) {
             return $resource('/players/:id', {id: '@Id'}, {
@@ -15,8 +15,8 @@ angular.module('webgameServices', [])
                     method: 'PUT'
                 }
             });
-
         })
+
         .factory('Unit', function ($resource) {
             return $resource('/units/:id', {id: '@Id'}, {
                 update: {
@@ -115,4 +115,41 @@ angular.module('webgameServices', [])
                     login: login,
                     logout: logout,
                 }
-            }]);
+            }])
+        .factory('PlayerData', function ($resource, $location, $rootScope) {
+            var playerData;
+            var working = false;
+
+            function getData() {
+                if (playerData == null && !working) {
+                    refreshData();
+                }
+                return playerData;
+            }
+
+            function refreshData() {
+                working = true;
+                playerData = $resource('/session');
+                playerData.get().$promise.then(function (data) {
+                    working = false;
+                    if (data.id == null) {
+                        $location.path('/login');
+                    }
+                    playerData = data;
+                    broadcastData();
+                });
+                return playerData;
+            }
+
+            function broadcastData() {
+                console.log('broadcasting');
+                $rootScope.$broadcast('player:updated', playerData);
+            }
+
+            return {
+                getData: getData,
+                refreshData: refreshData,
+                broadcastData: broadcastData
+            }
+        }
+        );

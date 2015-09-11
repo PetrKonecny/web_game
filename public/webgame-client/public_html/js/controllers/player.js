@@ -33,20 +33,18 @@ playerControllers
                     $scope.data = $data;
                 }
             }])
-        .controller('PlayerLogoutCtrl', ['$scope', '$http', 'Session', '$location',
-            function ($scope, $http, Session, $location) {
+        .controller('PlayerLogoutCtrl', ['$scope', '$http', 'Session', '$location', 'PlayerData',
+            function ($scope, $http, Session, $location, PlayerData) {
                 $http.get('/logout')
                         .success(sendLogoutCallback);
 
                 function sendLogoutCallback($data) {
                     Session.unset();
-                    $location.path('/login')
+                    PlayerData.refreshData();
                 }
             }])
-        .controller('PlayerMainCtrl', ['$scope', 'Session', 'Player', '$location', '$modal', 'SharedData', '$http', '$interval',
-            function ($scope, Session, Player, $location, $modal, SharedData, $http, $interval) {
-
-                $scope.player = Session.get();
+        .controller('PlayerMainCtrl', ['$scope', 'Session', '$location', '$modal', 'SharedData', '$http', '$interval', 'PlayerData',
+            function ($scope, Session, $location, $modal, SharedData, $http, $interval, PlayerData) {
                 refreshMain();
 
                 $scope.armyClicked = function ($id) {
@@ -63,24 +61,20 @@ playerControllers
                         return;
                     return "Army moves in " + timer.sec;
                 }
+                $scope.$on('player:updated', function (event, data) {
+                    $scope.player = data;
+                    setArmyMoveTimers();
+                });
 
                 function refreshMain(value) {
-                    Player.get({id: $scope.player.id}).$promise.then(
-                            function (value) {
-                                SharedData.set(value);
-                                $scope.player = value;
-                                $scope.armies = value.armies;
-                                $scope.cities = value.cities;
-                                setArmyMoveTimers();
-                            }
-                    );
+                    $scope.player = PlayerData.getData();
                 }
 
                 var refreshRecount = function () {
                     $http.get('/queue/recount').then(function (data) {
                         var n = data.data.recountTime - data.data.serverTime;
                         $scope.timer = new Object();
-                        new Countdown($scope, n, $scope.timer, refreshRecount).start();
+                        new Countdown(n, $scope.timer, refreshRecount).start();
                     });
                 };
 
@@ -88,41 +82,36 @@ playerControllers
 
                 function setArmyMoveTimers() {
                     var n = Math.round(new Date().getTime() / 1000);
-                    for (i = 0; i < $scope.armies.length; i++) {
-                        if ($scope.armies[i].position.move_at != null) {
-                            $scope.armies[i].timer = new Object();
-                            new Countdown($scope, $scope.armies[i].position.move_at - n, $scope.armies[i].timer).start();
+                    for (i = 0; i < $scope.player.armies.length; i++) {
+                        if ($scope.player.armies[i].position.move_at != null) {
+                            $scope.player.armies[i].timer = new Object();
+                            new Countdown($scope.player.armies[i].position.move_at - n, $scope.player.armies[i].timer, PlayerData.refreshData).start();
                         }
                     }
                 }
 
-                function Countdown(scope, duration, display, callback) {
+                function Countdown(duration, display, callback) {
                     var timer,
                             instance = this
 
 
-                    function decrementCounter() {
-                        if (!$scope.refreshEvents) {
-                            instance.stop();
-                        }
-                        if (display.sec === 0) {
-                            instance.stop();
-                            return;
-                        }
+                    function decrementCounter() {                       
                         display.sec--;
-                        if (display.sec === 0) {
-                            callback();
+                        if (display.sec <= 0) {
+                            instance.stop();
+                            //callback();
+                            return;
                         }
                     }
 
                     this.start = function () {
-                        clearInterval(timer);
                         display.sec = duration;
                         timer = $interval(decrementCounter, 1000);
                     };
 
                     this.stop = function () {
-                        clearInterval(timer);
+                        display.sec = 0
+                        $interval.cancel(timer);
                     }
                 }
 

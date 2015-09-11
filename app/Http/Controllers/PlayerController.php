@@ -58,7 +58,8 @@ class PlayerController extends Controller {
     }
 
     public function showSession() {
-        return Auth::user();
+        if(Auth::user() == null) return;
+        return PlayerController::show(Auth::user()->id);
     }
 
     /**

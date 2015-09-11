@@ -1,24 +1,17 @@
 var mapControllers = angular.module('mapControllers', []);
 mapControllers
-        .controller('MapCtrl', ['$scope', '$http', 'Session', 'Player', 'Position',
-            function ($scope, $http, Session, Player, Position) {
-
-
+        .controller('MapCtrl', ['$scope', '$http', 'Session', 'PlayerData', 'Position',
+            function ($scope, $http, Session, PlayerData, Position) {
+                $scope.player = PlayerData.getData();
+                $scope.$on('player:updated', function (event, data) {
+                    drawNodes(data.cities, data.armies);
+                    $scope.player = data;
+                });
                 $http.get('/test4')
                         .success(function ($data) {
                             $scope.map = angular.fromJson($data);
                             drawMap();
-                            $scope.player = Session.get();
-                            Player.get({id: $scope.player.id}).$promise.then(
-                                    function (value) {
-                                        console.log(value);
-                                        $scope.player = value;
-                                        $scope.armies = value.armies;
-                                        $scope.cities = value.cities;
-                                        displayCities();
-                                        displayArmies();
-                                    }
-                            );
+                            PlayerData.broadcastData();
                         });
 
                 var buffer = true;
@@ -60,9 +53,6 @@ mapControllers
                 }
 
                 function drawMap() {
-                    var m = new Matrix(2, .5, 0, 1, -paper.project.activeLayer.bounds.x * 1.3, paper.project.activeLayer.bounds.y);
-
-                    paper.project.activeLayer.transform(m);
 
                     for (i = 0; i < $scope.map.nodes.length; i++) {
                         nodes[i] = new Array();
@@ -76,6 +66,11 @@ mapControllers
                         }
                     }
                     paper.view.draw();
+                }
+
+                function drawNodes(cities, armies) {
+                    displayCities(cities);
+                    displayArmies(armies);
                 }
 
                 function createNode(x, y, map_x, map_y) {
@@ -106,11 +101,11 @@ mapControllers
                     paper.view.zoom = scale;
                 };
 
-                function displayCities() {
-                    for (i = 0; i < $scope.player.cities.length; i++) {
-                        var x = $scope.player.cities[i].position.x;
-                        var y = $scope.player.cities[i].position.y;
-                        var id = $scope.player.cities[i].position.id;
+                function displayCities(cities) {
+                    for (i = 0; i < cities.length; i++) {
+                        var x = cities[i].position.x;
+                        var y = cities[i].position.y;
+                        var id = cities[i].position.id;
                         var node = new paper.Path.Circle(nodes[y][x], 12);
                         node.fillColor = 'red';
                         node.map_x = x;
@@ -123,12 +118,12 @@ mapControllers
                     paper.view.draw();
                 }
 
-                function displayArmies() {
+                function displayArmies(armyList) {
 
-                    for (i = 0; i < $scope.player.armies.length; i++) {
-                        var x = $scope.player.armies[i].position.x;
-                        var y = $scope.player.armies[i].position.y;
-                        var id = $scope.player.armies[i].position.id;
+                    for (i = 0; i < armyList.length; i++) {
+                        var x = armyList[i].position.x;
+                        var y = armyList[i].position.y;
+                        var id = armyList[i].position.id;
                         var node = new paper.Path.Circle(nodes[y][x], 12);
                         node.fillColor = "red";
                         node.fillColor = "GreenYellow";
@@ -142,9 +137,9 @@ mapControllers
                     }
                     paper.view.draw();
                 }
-                
+
                 function clearArmies() {
-                    for (i=0; i<armies.length; i++){
+                    for (i = 0; i < armies.length; i++) {
                         armies[i].remove();
                     }
                 }
@@ -166,8 +161,11 @@ mapControllers
                                 break;
                             }
                         }
-                        clearArmies();
-                        displayArmies();
+                        /*
+                         clearArmies();
+                         displayArmies();
+                         */
+                        PlayerData.refreshData();
                     }
                     );
                 }
