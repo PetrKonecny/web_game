@@ -121,7 +121,7 @@ angular.module('webgameServices', [])
             var working = false;
 
             function getData() {
-                if (playerData == null && !working) {
+                if ((playerData == null || playerData.id == null) && !working) {
                     refreshData();
                 }
                 return playerData;
@@ -142,14 +142,17 @@ angular.module('webgameServices', [])
             }
 
             function broadcastData() {
+                if (working)
+                    return;
                 console.log('broadcasting');
                 $rootScope.$broadcast('player:updated', playerData);
             }
+
+            getData();
 
             return {
                 getData: getData,
                 refreshData: refreshData,
                 broadcastData: broadcastData
             }
-        }
-        );
+        });

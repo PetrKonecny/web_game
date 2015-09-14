@@ -4,12 +4,21 @@ armyControllers
             function ($scope, Army) {
                 $scope.armies = Army.query();
             }])
-        .controller('ArmyShowCtrl', ['$scope', 'Army', 'Unit', 'Position', 'Resource', '$routeParams', 'SharedData', '$location', '$http',
-            function ($scope, Army, Unit, Position, Resource, $routeParams, SharedData, $location, $http) {
+        .controller('ArmyShowCtrl', ['$scope', 'Army', '$routeParams',
+            function ($scope, Army, $routeParams) {
+                $scope.army = Army.get({id: $routeParams.id});
+                $scope.$on('player:updated', function (event, data) {
+                    Army.get({id: $routeParams.id}).$promise.then(function (data) {
+                        $scope.army = data;
+                    });
+                });
+            }])
+        .controller('ArmyMainCtrl', ['$scope', 'Army', 'Unit', 'Position', 'Resource', '$routeParams', 'PlayerData', '$location', '$http',
+            function ($scope, Army, Unit, Position, Resource, $routeParams, PlayerData, $location, $http) {
                 $scope.army = Army.get({id: $routeParams.id});
                 $scope.tabs = ['full', 'fight', 'buy', 'move'];
                 $scope.selection = $scope.tabs[0];
-                $scope.data = SharedData.get();
+
                 $scope.selectFight = function () {
                     $('#armyDetail').addClass('col-md-6');
                     $scope.armies = Army.query();
@@ -18,13 +27,21 @@ armyControllers
                 $scope.selectBuy = function () {
                     $('#armyDetail').addClass('col-md-6');
                     $scope.count = 1;
+                    $scope.$on('player:updated', function (event, data) {
+                        matchCityAndGetResources(data)
+                    });
+                    PlayerData.broadcastData();
                     var initialResources;
-                    $scope.resourceId = getCityForPosition(SharedData.get().cities, $scope.army).resource_id;
-                    Resource.get({id: $scope.resourceId}).$promise.then(function (data) {
-                        $scope.resource = data;
-                        initialResources = JSON.parse(JSON.stringify(data));
+
+                    function matchCityAndGetResources(data) {
+                        $scope.resourceId = getCityForPosition(data.cities, $scope.army).resource_id;
+                        Resource.get({id: $scope.resourceId}).$promise.then(function (data) {
+                            $scope.resource = data;
+                            initialResources = JSON.parse(JSON.stringify(data));
+                        }
+                        );
                     }
-                    );
+
                     Position.getAvailableUnits({id: $scope.army.position_id, action: 'availableUnits'}).$promise.then(
                             function (data) {
                                 $scope.unitsToBuy = data;
@@ -39,12 +56,12 @@ armyControllers
                     );
                     $scope.selection = $scope.tabs[2]
                 }
+
                 $scope.selectMove = function () {
                     $('#armyDetail').addClass('col-md-6');
                     $scope.armies = Army.query();
                     $scope.selection = $scope.tabs[3]
                 }
-
 
                 $scope.clickedBuy = function () {
                     $scope.disableButton = true;
@@ -64,6 +81,7 @@ armyControllers
                         $scope.disableButton = false;
                         $scope.resource = Resource.get({id: $scope.resourceId});
                         $scope.army = army;
+                        PlayerData.broadcastData();
                     });
                 };
 
@@ -81,41 +99,6 @@ armyControllers
                     unit.pivot.Unit_id = unit.Id;
                     army.units.push(unit);
                 }
-
-
-                /*
-                 $scope.clickedBuy = function ($id, $count) {
-                 $scope.disableButton = true;
-                 var duplicate = false;
-                 var result = $scope.unitsToBuy.filter(function (obj) {
-                 return obj.Id == $id;
-                 });
-                 
-                 function processInput($input) {
-                 for (var i = 0; i < $input.units.length; i++) {
-                 var unit = $input.units[i];
-                 if (unit.Id === result[0].Id) {
-                 unit.pivot.Unit_count += $count;
-                 duplicate = true;
-                 }
-                 }
-                 
-                 if (!duplicate) {
-                 result[0].pivot = new Object();
-                 result[0].pivot.Unit_count = 1;
-                 result[0].pivot.Army_id = $scope.army.Id;
-                 result[0].pivot.Unit_id = result[0].Id;
-                 $input.push(result[0]);
-                 }
-                 }
-                 
-                 var input = angular.copy($scope.army);
-                 processInput(input);
-                 input.$update(function (data) {
-                 $scope.disableButton = false;
-                 $scope.army = input;
-                 });
-                 }*/
 
                 $scope.clickedAttack = function ($id) {
                     $http.get('http://94.112.69.214:8080/armies/51/fight', {params: {"target": $id}})

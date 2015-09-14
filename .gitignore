@@ -3,3 +3,4 @@
 Homestead.yaml
 .env
 /public/webgame-client/nbproject/private/
+/nbproject/private/

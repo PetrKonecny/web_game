@@ -27,7 +27,7 @@ webgameApp.config(['$routeProvider', '$httpProvider',
                 }).
                 when('/armies/:id', {
                     templateUrl: 'webgame-client/public_html/army_main.html',
-                    controller: 'ArmyShowCtrl'
+                    controller: 'ArmyMainCtrl'
                 }).
                 when('/cities/create', {
                     templateUrl: 'webgame-client/public_html/partials/city/create.html',

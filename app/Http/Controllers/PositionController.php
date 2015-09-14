@@ -68,7 +68,7 @@ class PositionController extends Controller {
      * @return Response
      */
     public function update($id, Request $request) {
-        $delay = 240;
+        $delay = 60;
         $position = Position::find($id);
         $position->move_to_x = $request->input('x');
         $position->move_to_y = $request->input('y');

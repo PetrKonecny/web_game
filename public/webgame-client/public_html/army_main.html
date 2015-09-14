@@ -18,7 +18,7 @@
     <a href ng-click="selectBuy()"><h1>Buy</h1></a>
     <a href ng-click="selectMove()"><h1>Move</h1></a>
 </div>
-<div id="armyDetail" class="col-md-12"> 
+<div id="armyDetail" ng-controller="ArmyShowCtrl" class="col-md-12"> 
     <div ng-include src="'webgame-client/public_html/partials/unit/list.html'"></div>
 </div>
 <div class="col-md-6" ng-switch on="selection">

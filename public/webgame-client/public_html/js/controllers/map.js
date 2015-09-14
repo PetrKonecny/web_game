@@ -143,7 +143,7 @@ mapControllers
                         armies[i].remove();
                     }
                 }
-
+       
                 function moveArmy(x, y) {
                     var position = new Position();
                     position.id = selection.mapId;

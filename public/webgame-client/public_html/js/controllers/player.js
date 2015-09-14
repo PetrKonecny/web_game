@@ -95,11 +95,11 @@ playerControllers
                             instance = this
 
 
-                    function decrementCounter() {                       
+                    function decrementCounter() {
                         display.sec--;
                         if (display.sec <= 0) {
                             instance.stop();
-                            //callback();
+                            callback();
                             return;
                         }
                     }
