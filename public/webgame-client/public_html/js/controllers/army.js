@@ -78,6 +78,7 @@ armyControllers
                     }
 
                     army.$buyUnits({id: $scope.army.Id, action: 'buyUnits'}, function (data) {
+                        resetCountToBuy();
                         $scope.disableButton = false;
                         $scope.resource = Resource.get({id: $scope.resourceId});
                         $scope.army = army;
@@ -115,9 +116,15 @@ armyControllers
                     var result = new Array();
                     var array = ['gold', 'food', 'silver', 'platinum', 'stone', 'wood'];
                     for (i = 0; i < array.length; i++) {
-                        if (unit.resource[array[i]] != 0) {
-                            result.push(Math.round($scope.resource[array[i]] / unit.resource[array[i]]));
+                        if ($scope.resource[array[i]] <= 0 && unit.resource[array[i]] > 0) {
+                            return 0 + unit.countToBuy;
                         }
+                        if (unit.resource[array[i]] > 0 && $scope.resource[array[i]] > 0) {
+                            result.push(Math.floor($scope.resource[array[i]] / unit.resource[array[i]]));
+                        }
+                    }
+                    if (result.length == 0) {
+                        return 0 + unit.countToBuy;
                     }
                     return Math.min.apply(null, result) + unit.countToBuy;
                 }
@@ -153,6 +160,12 @@ armyControllers
                         result.stone += units[i].resource.stone * units[i].countToBuy;
                     }
                     return result;
+                }
+
+                function resetCountToBuy() {
+                    for (i = 0; i < $scope.unitsToBuy.length; i++) {
+                        $scope.unitsToBuy[i].countToBuy = 0;
+                    }
                 }
 
                 function substractResource(result, resource1, resource2) {
