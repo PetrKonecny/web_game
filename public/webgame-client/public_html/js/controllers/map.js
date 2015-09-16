@@ -53,7 +53,7 @@ mapControllers
                     for (i = 0; i < $scope.map.nodes.length; i++) {
                         nodes[i] = new Array();
                         for (j = 0; j < $scope.map.nodes[i].length; j++) {
-                            createNode($scope.map.nodes[i][j].x, $scope.map.nodes[i][j].y, j, i);
+                            createNode($scope.map.nodes[i][j].x , $scope.map.nodes[i][j].y, j, i);
                         }
                     }
                     for (i = 0; i < $scope.map.routes.length; i++) {
@@ -222,7 +222,7 @@ mapControllers
                 function clearPopupLayer() {
                     if (popupLayer != null) {
                         popupLayer.removeChildren();
-                    }        
+                    }
                 }
 
                 function getPositionConnection(position, army) {
@@ -244,7 +244,7 @@ mapControllers
                 }
 
                 function clearArmyLayer() {
-                    if(armyLayer != null){
+                    if (armyLayer != null) {
                         armyLayer.removeChildren();
                     }
                 }

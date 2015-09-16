@@ -130,8 +130,8 @@ class TestController extends Controller {
         $startY = 0;
         for ($i = 1; $i <= $level; $i++) {
             for ($j = 1; $j <= $level; $j++) {
-                $x = $startX + 50 * $j;
-                $y = $startY + 50 * $j;
+                $x = $startX + 60 * $j + rand(-10,10);
+                $y = $startY + 60 * $j + rand(-15,15);
                 if ($j == $level) {
                     $txt = '{"map_x":' . $j . ',"map_y":' . $i . ',"x": ' . $x . ' ,"y": ' . $y . '}],[';
                     if ($i == $level) {
@@ -141,11 +141,9 @@ class TestController extends Controller {
                     $txt = '{"map_x":' . $j . ',"map_y":' . $i . ',"x": ' . $x . ' ,"y": ' . $y . '},';
                 }
                 fwrite($file, $txt);
-                $x += 50;
-                $y += 50;
             }
-            $startX += 50;
-            $startY -= 50;
+            $startX += 60;
+            $startY -= 60;
         }
 
         for ($i = 1; $i <= $level; $i++) {
