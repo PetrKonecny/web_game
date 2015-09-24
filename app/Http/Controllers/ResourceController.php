@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Resource;
+use App\CityEffectApplier;
 use App\Http\Controllers\Controller;
 
 class ResourceController extends Controller {
@@ -76,12 +77,15 @@ class ResourceController extends Controller {
         //
     }
 
-    public static function getPricesForUnits($units) {
+    public static function getPricesForUnits($units, $city) {
         $basePrices = array();
-        foreach($units as $unit) {
-            array_push($basePrices, $unit->resource_id);
+        foreach ($units as $unit) {
+            $unit->resource;
         }
-        $basePrices = \App\Resource::whereIn('Id', $basePrices)->get(); 
+        $modifiedUnits = CityEffectApplier::modifyUnitPricesByCity($units, $city);
+        foreach ($modifiedUnits as $unit) {
+            array_push($basePrices, $unit->resource);
+        }
         return $basePrices;
     }
 
@@ -91,7 +95,7 @@ class ResourceController extends Controller {
             array_push($basePrices, $building->resource_id);
         }
         $basePrices = \App\Resource::whereIn('Id', $basePrices)->get();
-        return \App\CityEffectApplier::modifyPricesByCity($basePrices, $city);
+        return \App\CityEffectApplier::modifyBuildingPricesByCity($basePrices, $city);
     }
 
 }

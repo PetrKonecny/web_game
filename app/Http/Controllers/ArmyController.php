@@ -89,14 +89,13 @@ class ArmyController extends Controller {
         foreach ($unitsToBuy as $unit) {
             $result[$unit['Id']] = array('Unit_count' => $unit['pivot']['Unit_count']);
         }
-        $city = $this->getCityArmyIsIn($army);
-        $this->payForUnits($unitsToBuy, $army->units, $this->getCityArmyIsIn($army)->resource);
+        $this->payForUnits($unitsToBuy, $army, $this->getCityArmyIsIn($army));
         $army->units()->sync($result);
     }
 
-    public function payForUnits($unitsToBuy, $units, $resource) {
-        $prices = ResourceController::getPricesForUnits($units);
-        $unitsToBuy = $this->getBuyCount($units, $unitsToBuy);
+    public function payForUnits($unitsToBuy, $army, $city) {
+        $prices = ResourceController::getPricesForUnits($army->units,$city);
+        $unitsToBuy = $this->getBuyCount($army->units, $unitsToBuy);
         foreach ($prices as $price) {
             foreach ($unitsToBuy as $unit) {
                 if ($price['id'] == $unit['resource_id']) {
@@ -104,7 +103,7 @@ class ArmyController extends Controller {
                 }
             }
         }       
-        $resource = Resource::find($resource->id);
+        $resource = Resource::find($city->resource->id);
         $resource->substractResourceArray($prices);
         $resource->save();
     }

@@ -105,7 +105,8 @@ class PositionController extends Controller {
                 case 2: $txt = 'tier2';
                     break;
             }
-            return Unit::whereIn('Id', $units[$txt])->with('resource')->get();
+            $units =  Unit::whereIn('Id', $units[$txt])->with('resource')->get();
+            return \App\CityEffectApplier::modifyUnitPricesByCity($units, $city[0]);
         }
     }
 
