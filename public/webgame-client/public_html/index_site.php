@@ -8,18 +8,18 @@ and open the template in the editor.
     <head>
         <title>TODO supply a title</title>
         <meta charset="utf-8">
-        <link rel="stylesheet" href="webgame-client/public_html/bower_components/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="webgame-client/public_html/bower_components/bootstrap/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="webgame-client/public_html/bower_components/angularjs-slider/dist/rzslider.css">
         <link rel="stylesheet" href="webgame-client/public_html/css/webgame.css">
 
-        <script src="webgame-client/public_html/bower_components/jquery/dist/jquery.js"></script>
-        <script src="webgame-client/public_html/bower_components/angular/angular.js"></script>
-        <script src="webgame-client/public_html/bower_components/angular-route/angular-route.js"></script>
-        <script src="webgame-client/public_html/bower_components/angular-resource/angular-resource.js"></script>
-        <script src="webgame-client/public_html/bower_components/angular-cookies/angular-cookies.js"></script>
-        <script src="webgame-client/public_html/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+        <script src="webgame-client/public_html/bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="webgame-client/public_html/bower_components/angular/angular.min.js"></script>
+        <script src="webgame-client/public_html/bower_components/angular-route/angular-route.min.js"></script>
+        <script src="webgame-client/public_html/bower_components/angular-resource/angular-resource.min.js"></script>
+        <script src="webgame-client/public_html/bower_components/angular-cookies/angular-cookies.min.js"></script>
+        <script src="webgame-client/public_html/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
         <script src="webgame-client/public_html/bower_components/angularjs-slider/dist/rzslider.min.js"></script>
-        <script src="webgame-client/public_html/bower_components/paper/dist/paper-full.js"></script>
+        <script src="webgame-client/public_html/bower_components/paper/dist/paper-full.min.js"></script>
         <script src="webgame-client/public_html/bower_components/ngSticky/dist/sticky.min.js"></script>
         <script src="https://js.pusher.com/2.2/pusher.min.js"></script>
         <script src="webgame-client/public_html/bower_components/pusher-angular/lib/pusher-angular.min.js"></script>´
