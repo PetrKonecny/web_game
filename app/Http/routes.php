@@ -48,7 +48,6 @@ Route::get('/test4', 'TestController@getMap');
 Route::get('/test5', 'TestController@push');
 Route::get('/test6', 'TestController@runTestCommand');
 
-
 Route::get('/session', 'PlayerController@showSession');
 Route::post('/login', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
@@ -60,3 +59,5 @@ Route::get('/positions/{id}/availableUnits', 'PositionController@getAvailableUni
 Route::get('/resources/{id}', 'ResourceController@show');
 
 Route::get('/queue/recount', 'QueueController@getNextRecount');
+
+Route::get('/notification/test','NotificationController@create');

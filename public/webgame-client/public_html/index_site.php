@@ -22,7 +22,7 @@ and open the template in the editor.
         <script src="webgame-client/public_html/bower_components/paper/dist/paper-full.min.js"></script>
         <script src="webgame-client/public_html/bower_components/ngSticky/dist/sticky.min.js"></script>
         <script src="https://js.pusher.com/2.2/pusher.min.js"></script>
-        <script src="webgame-client/public_html/bower_components/pusher-angular/lib/pusher-angular.min.js"></script>´
+        <script src="webgame-client/public_html/bower_components/pusher-angular/lib/pusher-angular.min.js"></script>
         <script src="webgame-client/public_html/js/webgame.js"></script>
         <script src="webgame-client/public_html/js/controllers.js"></script>
         <script src="webgame-client/public_html/js/services.js"></script>
@@ -31,7 +31,19 @@ and open the template in the editor.
         <script src="webgame-client/public_html/js/controllers/player.js"></script>
         <script src="webgame-client/public_html/js/controllers/map.js"></script>
     </head>
-    <body class="col-md-12">
+    <body>
+        <div class="topbar" ng-controller="TopBarCtrl" sticky>
+            <h1>
+                {{player.username}}
+                <a href="/#/main">Home</a>
+                <a href="/#/notification">Notifications</a>({{player.notifications.length}})
+                <a href="/#/logout">Logout</a>
+            </h1>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
         <div class="view-container">
             <div ng-view class="view-frame"></div>
         </div>

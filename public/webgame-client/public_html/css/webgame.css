@@ -17,3 +17,9 @@ canvas {
     z-index: 100;
     background-color: #00b3ee;
 }
+
+.topbar {
+    z-index: 100;
+    background-color: buttonface;
+    border: solid buttonface;
+}

@@ -74,12 +74,8 @@ class ArmyController extends Controller {
      */
     public function update($id, Request $request) {
         $army = Army::find($id);
-        $units = $request->input('units');
-        $result = array();
-        foreach ($units as $unit) {
-            $result[$unit['Id']] = array('Unit_count' => $unit['pivot']['Unit_count']);
-        }
-        $army->units()->sync($result);
+        $army->name = $request->input('name');
+        $army->save();
     }
 
     public function buyUnits($id, Request $request) {
@@ -94,7 +90,7 @@ class ArmyController extends Controller {
     }
 
     public function payForUnits($unitsToBuy, $army, $city) {
-        $prices = ResourceController::getPricesForUnits($army->units,$city);
+        $prices = ResourceController::getPricesForUnits($army->units, $city);
         $unitsToBuy = $this->getBuyCount($army->units, $unitsToBuy);
         foreach ($prices as $price) {
             foreach ($unitsToBuy as $unit) {
@@ -102,7 +98,7 @@ class ArmyController extends Controller {
                     $price->multiplyResource($unit['countToBuy']);
                 }
             }
-        }       
+        }
         $resource = Resource::find($city->resource->id);
         $resource->substractResourceArray($prices);
         $resource->save();

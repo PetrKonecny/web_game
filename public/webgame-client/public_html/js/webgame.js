@@ -61,8 +61,12 @@ webgameApp.config(['$routeProvider', '$httpProvider',
                     templateUrl: 'webgame-client/public_html/map.html',
                     controller: 'MapCtrl'
                 }).
+                when('/notification', {
+                    templateUrl: 'webgame-client/public_html/notification.html',
+                    controller: 'NotifCtrl'
+                }).
                 otherwise({
-                    redirectTo: '/phones'
+                    redirectTo: '/main'
                 });
 
         $httpProvider.defaults.withCredentials = true;

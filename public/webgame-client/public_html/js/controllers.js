@@ -18,7 +18,19 @@ webgameControllers
                         }
                 );
 
+            }])
+        .controller('TopBarCtrl', ['$scope', 'PlayerData',
+            function ($scope, PlayerData) {
+                $scope.$on('player:updated', function (event, data) {
+                    $scope.player = data;
+                });
+            }])
+        .controller('NotifCtrl', ['$scope', 'PlayerData',
+            function ($scope, PlayerData) {
+                $scope.player = PlayerData.getData();
             }]);
+;
+;
 
 
                 

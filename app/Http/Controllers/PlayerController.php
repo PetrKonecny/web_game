@@ -48,18 +48,29 @@ class PlayerController extends Controller {
         $player = User::find($id);
         $player->armies;
         $player->cities;
-        foreach ($player->cities as $city){
+        foreach ($player->cities as $city) {
             $city->position;
         }
-        foreach ($player->armies as $army){
+        foreach ($player->armies as $army) {
             $army->position;
         }
         return $player;
     }
 
     public function showSession() {
-        if(Auth::user() == null) return;
-        return PlayerController::show(Auth::user()->id);
+        $player = Auth::user();
+        if ($player == null)
+            return;
+        $player->armies;
+        $player->cities;
+        $player->notifications;
+        foreach ($player->cities as $city) {
+            $city->position;
+        }
+        foreach ($player->armies as $army) {
+            $army->position;
+        }
+        return $player;
     }
 
     /**
@@ -91,5 +102,5 @@ class PlayerController extends Controller {
     public function destroy($id) {
         //
     }
-  
+
 }
