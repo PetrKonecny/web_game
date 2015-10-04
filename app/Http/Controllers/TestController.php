@@ -123,16 +123,16 @@ class TestController extends Controller {
     }
 
     public function generateMap() {
-        $level = 50;
+        $level = 75;
         $file = fopen("map2.txt", "w");
         fwrite($file, '{ "nodes": [[');
         $startX = 0;
         $startY = 0;
         for ($i = 1; $i <= $level; $i++) {
-            for ($j = 1; $j <= $level; $j++) {
+            for ($j = 1; $j <= $level-$i+1; $j++) {
                 $x = $startX + 50 * $j;
                 $y = $startY + 50 * $j;
-                if ($j == $level) {
+                if ($j == $level-$i+1) {
                     $txt = '{"map_x":' . $j . ',"map_y":' . $i . ',"x": ' . $x . ' ,"y": ' . $y . '}],[';
                     if ($i == $level) {
                         $txt = '{"map_x":' . $j . ',"map_y":' . $i . ',"x": ' . $x . ' ,"y": ' . $y . '}]],"routes": [[';
@@ -147,9 +147,9 @@ class TestController extends Controller {
         }
 
         for ($i = 1; $i <= $level; $i++) {
-            for ($j = 1; $j <= $level; $j++) {
+            for ($j = 1; $j <= $level-$i+1; $j++) {
                 $first = true;
-                if ((rand(0, 10) < 7 || $j == 1) && $i != $level) {
+                if ((rand(0, 10) < 7 || $j == 1) && $i != $level && $j != $level-$i+1) {
                     $to = $j;
                     $toLvl = $i + 1;
                     if ($j == 1) {
@@ -161,7 +161,7 @@ class TestController extends Controller {
                         fwrite($file, $txt);
                     }
                 }
-                if ((rand(0, 10) < 6 && $j != $level) && $i != $level) {
+                if ((rand(0, 10) < 6 && $j < $level-$i) && $i != $level) {
                     $to = $j + 1;
                     $toLvl = $i + 1;
                     if ($j == 1 && $first) {
@@ -174,7 +174,7 @@ class TestController extends Controller {
                     }
                 }
 
-                if (rand(0, 10) < 8 && $j != $level) {
+                if (rand(0, 10) < 8 && $j != $level-$i+1) {
                     $to = $j + 1;
                     $toLvl = $i;
                     if ($j == 1 && $first) {
@@ -185,7 +185,7 @@ class TestController extends Controller {
                         fwrite($file, $txt);
                     }
                 }
-                if ($j == $level && $i != $level) {
+                if ($j == $level-$i+1 && $i != $level) {
                     $txt = '],[';
                     fwrite($file, $txt);
                 }

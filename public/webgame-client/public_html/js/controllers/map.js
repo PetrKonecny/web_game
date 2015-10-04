@@ -14,6 +14,7 @@ mapControllers
                             PlayerData.broadcastData();
                         });
                 var scale = 1;
+                var layers = new Array();
                 var popupLayer;
                 var armyLayer;
                 var nodes = new Array();
@@ -25,9 +26,13 @@ mapControllers
                 var node = new paper.Path.Circle(new paper.Point(10, 10), 15);
                 node.fillColor = 'black';
                 var symbol = new paper.Symbol(node);
+                symbol.definition.onFrame = function (event) {
+                    if (this.x > 1000)
+                        this.visible = false;
+                }
+                var route = new paper.Path
                 var tool = new paper.Tool();
                 var isDrag = false;
-                var path;
                 var selection;
                 tool.onMouseDown = function (event) {
                     path = new Point();
@@ -46,23 +51,29 @@ mapControllers
                     path.add(event.point);
                     var des = center(event.downPoint, event.point);
                     paper.project.view.center = des;
+                    hideNodes();
+                    hideRoutes();
                 }
 
                 function drawMap() {
 
                     for (i = 0; i < $scope.map.nodes.length; i++) {
+                        layers.push(new paper.Layer());
                         nodes[i] = new Array();
                         for (j = 0; j < $scope.map.nodes[i].length; j++) {
-                            createNode($scope.map.nodes[i][j].x , $scope.map.nodes[i][j].y, j, i);
+                            createNode($scope.map.nodes[i][j].x, $scope.map.nodes[i][j].y, j, i);
                         }
                     }
+
                     for (i = 0; i < $scope.map.routes.length; i++) {
                         connections[i] = new Array();
+                        layers[i].activate();
                         for (j = 0; j < $scope.map.routes[i].length; j++) {
                             displayConnection(nodes[i][$scope.map.routes[i][j].from_x - 1 ], nodes[$scope.map.routes[i][j].to_y - 1][$scope.map.routes[i][j].to_x - 1], i);
                         }
                     }
-                    paper.view.draw();
+                    hideNodes();
+                    hideRoutes();
                 }
 
                 function drawNodes(cities, armies) {
@@ -74,17 +85,57 @@ mapControllers
                     var point = new Point(x, y);
                     point.map_x = map_x;
                     point.map_y = map_y;
-                    var circle = symbol.place(point);
+                    //var circle = symbol.place(point);
+                    var circle = new paper.Path.Circle(point, 15);
+                    circle.position = point;            
+                    circle.fillColor = 'black';
                     circle.map_x = map_x;
                     circle.map_y = map_y;
-                    nodes[map_y].push(point);
+                    nodes[map_y].push(circle);
+                }
+
+                var hideNodes = function (event) {
+                    var center = paper.view.center;
+                    var width = paper.view.viewSize.width * ((1 - paper.view.zoom)+1);
+                    var height = paper.view.viewSize.height * ((1 - paper.view.zoom)+1);
+                    for (i = 0; i < nodes.length; i++) {
+                        for (j = 0; j < nodes[i].length; j++) {
+                            var node = nodes[i][j];
+                            if (Math.abs((center.x - node.position.x)) > width
+                                    || Math.abs((center.y - node.position.y)) > height)
+                            {
+                                node.visible = false;
+                            } else {
+                                node.visible = true;
+                            }
+                        }
+
+                    }
+                }
+
+                var hideRoutes = function (event) {
+                    var center = paper.view.center;
+                    var width = paper.view.viewSize.width * ((1 - paper.view.zoom)+1);
+                    var height = paper.view.viewSize.height * ((1 - paper.view.zoom)+1);
+                    for (i = 0; i < connections.length; i++) {
+                        for (j = 0; j < connections[i].length; j++) {
+                            var route = connections[i][j];
+                            if (Math.abs((center.x - route.map_start.position.x)) > width
+                                    || Math.abs((center.y - route.map_start.position.y)) > height)
+                            {
+                                route.visible = false;
+                            } else {
+                                route.visible = true;
+                            }
+                        }
+                    }
                 }
 
                 function displayConnection(start, end, i) {
-                    var myPath = new paper.Path();
+                    var myPath = new paper.Path();                 
                     myPath.strokeColor = 'black';
-                    myPath.add(start);
-                    myPath.add(end);
+                    myPath.add(start.position);
+                    myPath.add(end.position);
                     myPath.map_start = start;
                     myPath.map_end = end;
                     connections[i].push(myPath);
@@ -93,17 +144,21 @@ mapControllers
                 $scope.clickedMinus = function () {
                     scale *= 0.75;
                     paper.view.zoom = scale;
+                    hideNodes();
+                    hideRoutes();
                 };
                 $scope.clickedPlus = function () {
                     scale *= 1.25;
                     paper.view.zoom = scale;
+                    hideNodes();
+                    hideRoutes();
                 };
                 function displayCities(cities) {
                     for (i = 0; i < cities.length; i++) {
                         var x = cities[i].position.x;
                         var y = cities[i].position.y;
                         var id = cities[i].position.id;
-                        var node = new paper.Path.Circle(nodes[y][x], 12);
+                        var node = new paper.Path.Circle(nodes[y][x].position, 12);
                         node.fillColor = 'red';
                         node.map_x = x;
                         node.map_y = y;
@@ -112,7 +167,6 @@ mapControllers
                             selection = this;
                         }
                     }
-                    paper.view.draw();
                 }
 
                 function displayArmies(armyList) {
@@ -122,7 +176,7 @@ mapControllers
                         var x = armyList[i].position.x;
                         var y = armyList[i].position.y;
                         var id = armyList[i].position.id;
-                        var node = new paper.Path.Circle(nodes[y][x], 12);
+                        var node = new paper.Path.Circle(nodes[y][x].position, 12);
                         node.fillColor = "GreenYellow";
                         node.map_x = x;
                         node.map_y = y;
@@ -133,11 +187,10 @@ mapControllers
                         }
                         if (armyList[i].position.move_to_x != null) {
                             var moveNode = createMoveNode(armyList[i].position.move_to_x, armyList[i].position.move_to_y);
-                            drawArrow(nodes[y][x], moveNode);
+                            drawArrow(nodes[y][x].position, moveNode);
                         }
                     }
                     mainLayer.activate();
-                    paper.view.draw();
                 }
 
                 function createMoveNode(x, y) {
@@ -147,7 +200,7 @@ mapControllers
                     if (nodes[y][x] == null) {
                         return;
                     }
-                    var moveNode = new paper.Path.Circle(nodes[y][x], 12);
+                    var moveNode = new paper.Path.Circle(nodes[y][x].position, 12);
                     moveNode.fillColor = "Blue";
                     moveNode.map_x = x;
                     moveNode.map_y = y;
@@ -203,10 +256,9 @@ mapControllers
                 }
 
                 function drawArrow(start, end) {
-                    console.log(start, end);
                     var path = new paper.Path();
-                    path.add(start);
-                    path.add(end);
+                    path.add(start.position);
+                    path.add(end.position);
                     path.strokeColor = 'red';
                     path.strokeWidth = 6;
                     var vector = path.getPointAt(path.length).subtract(path.getPointAt(path.length - 25));
