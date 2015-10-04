@@ -24,7 +24,6 @@ mapControllers
                 
                 if(paper.tool != null ) paper.tool.remove();
                 var tool = new paper.Tool();
-                var isDrag = false;
                 var selection;
 
                 tool.onMouseDown = function (event) {
@@ -72,6 +71,7 @@ mapControllers
                 function drawNodes(cities, armies) {
                     displayCities(cities);
                     displayArmies(armies);
+                    paper.view.draw();
                 }
 
                 function createNode(x, y, map_x, map_y) {
