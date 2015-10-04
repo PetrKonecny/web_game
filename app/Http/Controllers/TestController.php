@@ -123,7 +123,7 @@ class TestController extends Controller {
     }
 
     public function generateMap() {
-        $level = 75;
+        $level = 200;
         $file = fopen("map2.txt", "w");
         fwrite($file, '{ "nodes": [[');
         $startX = 0;

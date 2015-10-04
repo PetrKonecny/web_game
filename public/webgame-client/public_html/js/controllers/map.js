@@ -87,7 +87,7 @@ mapControllers
                     point.map_y = map_y;
                     //var circle = symbol.place(point);
                     var circle = new paper.Path.Circle(point, 15);
-                    circle.position = point;            
+                    circle.position = point;
                     circle.fillColor = 'black';
                     circle.map_x = map_x;
                     circle.map_y = map_y;
@@ -96,8 +96,8 @@ mapControllers
 
                 var hideNodes = function (event) {
                     var center = paper.view.center;
-                    var width = paper.view.viewSize.width * ((1 - paper.view.zoom)+1);
-                    var height = paper.view.viewSize.height * ((1 - paper.view.zoom)+1);
+                    var width = (paper.view.viewSize.width * (1 / paper.view.zoom)) * 0.5;
+                    var height = (paper.view.viewSize.height * (1 / paper.view.zoom)) * 0.5;
                     for (i = 0; i < nodes.length; i++) {
                         for (j = 0; j < nodes[i].length; j++) {
                             var node = nodes[i][j];
@@ -115,8 +115,8 @@ mapControllers
 
                 var hideRoutes = function (event) {
                     var center = paper.view.center;
-                    var width = paper.view.viewSize.width * ((1 - paper.view.zoom)+1);
-                    var height = paper.view.viewSize.height * ((1 - paper.view.zoom)+1);
+                    var width = (paper.view.viewSize.width * (1 / paper.view.zoom)) * 0.5;
+                    var height = (paper.view.viewSize.height * (1 / paper.view.zoom)) * 0.5;
                     for (i = 0; i < connections.length; i++) {
                         for (j = 0; j < connections[i].length; j++) {
                             var route = connections[i][j];
@@ -132,7 +132,7 @@ mapControllers
                 }
 
                 function displayConnection(start, end, i) {
-                    var myPath = new paper.Path();                 
+                    var myPath = new paper.Path();
                     myPath.strokeColor = 'black';
                     myPath.add(start.position);
                     myPath.add(end.position);
@@ -187,7 +187,7 @@ mapControllers
                         }
                         if (armyList[i].position.move_to_x != null) {
                             var moveNode = createMoveNode(armyList[i].position.move_to_x, armyList[i].position.move_to_y);
-                            drawArrow(nodes[y][x].position, moveNode);
+                            drawArrow(nodes[y][x].position, moveNode.position);
                         }
                     }
                     mainLayer.activate();
@@ -247,9 +247,9 @@ mapControllers
                     for (i = 0; i < movesConnections.length; i++) {
                         var path = new paper.Path();
                         if (movesConnections[i].map_end.map_x == army.map_x && movesConnections[i].map_end.map_y == army.map_y) {
-                            drawArrow(movesConnections[i].map_end, movesConnections[i].map_start);
+                            drawArrow(movesConnections[i].map_end.position, movesConnections[i].map_start.position);
                         } else {
-                            drawArrow(movesConnections[i].map_start, movesConnections[i].map_end);
+                            drawArrow(movesConnections[i].map_start.position, movesConnections[i].map_end.position);
                         }
                     }
                     mainLayer.activate();
@@ -257,8 +257,8 @@ mapControllers
 
                 function drawArrow(start, end) {
                     var path = new paper.Path();
-                    path.add(start.position);
-                    path.add(end.position);
+                    path.add(start);
+                    path.add(end);
                     path.strokeColor = 'red';
                     path.strokeWidth = 6;
                     var vector = path.getPointAt(path.length).subtract(path.getPointAt(path.length - 25));
