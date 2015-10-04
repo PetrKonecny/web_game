@@ -1,7 +1,7 @@
 var mapControllers = angular.module('mapControllers', []);
 mapControllers
-        .controller('MapCtrl', ['$scope', '$http', 'Session', 'PlayerData', 'Position',
-            function ($scope, $http, Session, PlayerData, Position) {
+        .controller('MapCtrl', ['$scope', '$http', 'Session', 'PlayerData', 'Position', 'Map',
+            function ($scope, $http, Session, PlayerData, Position, Map) {
                 $scope.player = PlayerData.getData();
                 $scope.$on('player:updated', function (event, data) {
                     drawNodes(data.cities, data.armies);
@@ -13,29 +13,22 @@ mapControllers
                             drawMap();
                             PlayerData.broadcastData();
                         });
+                Map.init();
                 var scale = 1;
                 var layers = new Array();
                 var popupLayer;
                 var armyLayer;
                 var nodes = new Array();
                 var connections = new Array();
-                var canvas = document.getElementById('canvas');
-                paper.setup(canvas);
-                paper.install(window);
                 var mainLayer = new paper.Layer();
-                var node = new paper.Path.Circle(new paper.Point(10, 10), 15);
-                node.fillColor = 'black';
-                var symbol = new paper.Symbol(node);
-                symbol.definition.onFrame = function (event) {
-                    if (this.x > 1000)
-                        this.visible = false;
-                }
-                var route = new paper.Path
+                
+                if(paper.tool != null ) paper.tool.remove();
                 var tool = new paper.Tool();
                 var isDrag = false;
                 var selection;
+
                 tool.onMouseDown = function (event) {
-                    path = new Point();
+                    path = new paper.Point();
                     path.add(event.point);
                 }
 
@@ -73,7 +66,7 @@ mapControllers
                         }
                     }
                     hideNodes();
-                    hideRoutes();
+                    hideRoutes();                  
                 }
 
                 function drawNodes(cities, armies) {
@@ -82,7 +75,7 @@ mapControllers
                 }
 
                 function createNode(x, y, map_x, map_y) {
-                    var point = new Point(x, y);
+                    var point = new paper.Point(x, y);
                     point.map_x = map_x;
                     point.map_y = map_y;
                     //var circle = symbol.place(point);
@@ -111,12 +104,13 @@ mapControllers
                         }
 
                     }
+                    paper.project.view.update();
                 }
 
                 var hideRoutes = function (event) {
                     var center = paper.view.center;
                     var width = (paper.view.viewSize.width * (1 / paper.view.zoom)) * 0.5;
-                    var height = (paper.view.viewSize.height * (1 / paper.view.zoom)) * 0.5;
+                    var height = (paper.view.viewSize.height * (1 / paper.view.zoom)) * 0.5;               
                     for (i = 0; i < connections.length; i++) {
                         for (j = 0; j < connections[i].length; j++) {
                             var route = connections[i][j];

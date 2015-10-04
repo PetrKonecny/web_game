@@ -155,4 +155,17 @@ angular.module('webgameServices', [])
                 refreshData: refreshData,
                 broadcastData: broadcastData
             }
+        })
+        .factory('Map', function () {
+            var canvas;
+            function init() {     
+                canvas = document.getElementById('canvas');
+                paper.setup(canvas);
+            }
+
+
+
+            return {
+                init: init
+            }
         });
