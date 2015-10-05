@@ -18,11 +18,13 @@ mapControllers
                 var layers = new Array();
                 var popupLayer;
                 var armyLayer;
+                var finder;
                 var nodes = new Array();
                 var connections = new Array();
                 var mainLayer = new paper.Layer();
-                
-                if(paper.tool != null ) paper.tool.remove();
+
+                if (paper.tool != null)
+                    paper.tool.remove();
                 var tool = new paper.Tool();
                 var selection;
 
@@ -45,6 +47,7 @@ mapControllers
                     paper.project.view.center = des;
                     hideNodes();
                     hideRoutes();
+                    drawMinimapScope();
                 }
 
                 function drawMap() {
@@ -65,7 +68,39 @@ mapControllers
                         }
                     }
                     hideNodes();
-                    hideRoutes();                  
+                    hideRoutes();
+                    drawMinimap();
+                    drawMinimapScope();
+                }
+
+                function drawMinimap() {
+                    Map.changePaper(1);
+                    var a = nodes[0][0].position;
+                    var b = nodes[0][199].position;
+                    var c = nodes[199][0].position;
+                    var path = new paper.Path();
+                    path.strokeColor = 'black';
+                    path.add(new paper.Point(a.x / 100, a.y / 100));
+                    path.add(new paper.Point(b.x / 100, b.y / 100));
+                    path.add(new paper.Point(c.x / 100, c.y / 100));
+                    path.closed = true;
+                    paper.view.center = new paper.Point(50, 0);
+                    Map.changePaper(0);
+                }
+
+                function drawMinimapScope() {
+                    if(finder != null) finder.remove();
+                    var bounds = paper.view.bounds;
+                    Map.changePaper(1);
+                    finder = new paper.Path();
+                    finder.strokeColor = 'red';
+                    finder.add(new paper.Point(bounds.topLeft.x / 100, bounds.topLeft.y / 100));
+                    finder.add(new paper.Point(bounds.topRight.x / 100, bounds.topRight.y / 100));
+                    finder.add(new paper.Point(bounds.bottomRight.x / 100, bounds.bottomRight.y / 100));
+                    finder.add(new paper.Point(bounds.bottomLeft.x / 100, bounds.bottomLeft.y / 100));
+                    finder.closed = true;
+                    paper.view.draw();
+                    Map.changePaper(0);
                 }
 
                 function drawNodes(cities, armies) {
@@ -110,7 +145,7 @@ mapControllers
                 var hideRoutes = function (event) {
                     var center = paper.view.center;
                     var width = (paper.view.viewSize.width * (1 / paper.view.zoom)) * 0.5;
-                    var height = (paper.view.viewSize.height * (1 / paper.view.zoom)) * 0.5;               
+                    var height = (paper.view.viewSize.height * (1 / paper.view.zoom)) * 0.5;
                     for (i = 0; i < connections.length; i++) {
                         for (j = 0; j < connections[i].length; j++) {
                             var route = connections[i][j];
@@ -140,12 +175,14 @@ mapControllers
                     paper.view.zoom = scale;
                     hideNodes();
                     hideRoutes();
+                    drawMinimapScope();
                 };
                 $scope.clickedPlus = function () {
                     scale *= 1.25;
                     paper.view.zoom = scale;
                     hideNodes();
                     hideRoutes();
+                    drawMinimapScope();
                 };
                 function displayCities(cities) {
                     for (i = 0; i < cities.length; i++) {

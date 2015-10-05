@@ -157,15 +157,24 @@ angular.module('webgameServices', [])
             }
         })
         .factory('Map', function () {
+            var papers;
             var canvas;
             function init() {     
+                papers = new Array();
                 canvas = document.getElementById('canvas');
                 paper.setup(canvas);
+                papers.push(paper);
+                paper = new paper.PaperScope();
+                paper.setup(document.getElementById('canvas2'));
+                papers.push(paper);
+                paper = papers[0];
+            }
+            function changePaper(which){
+                paper = papers[which];
             }
 
-
-
             return {
-                init: init
+                init: init ,
+                changePaper : changePaper
             }
         });
