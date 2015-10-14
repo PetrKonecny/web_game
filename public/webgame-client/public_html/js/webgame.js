@@ -21,10 +21,6 @@ webgameApp.config(['$routeProvider', '$httpProvider',
                     templateUrl: 'webgame-client/public_html/partials/army/list.html',
                     controller: 'ArmyListCtrl'
                 }).
-                when('/armies/result', {
-                    templateUrl: 'webgame-client/public_html/partials/info/battle_result.html',
-                    controller: 'BattleResultCtrl'
-                }).
                 when('/armies/:id', {
                     templateUrl: 'webgame-client/public_html/army_main.html',
                     controller: 'ArmyMainCtrl'
@@ -64,6 +60,10 @@ webgameApp.config(['$routeProvider', '$httpProvider',
                 when('/notification', {
                     templateUrl: 'webgame-client/public_html/notification.html',
                     controller: 'NotifCtrl'
+                }).
+                when('/logs/:id', {
+                    templateUrl: 'webgame-client/public_html/partials/info/battle_result.html',
+                    controller: 'BattleResultCtrl'
                 }).
                 otherwise({
                     redirectTo: '/main'

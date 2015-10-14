@@ -32,9 +32,9 @@ class TestController extends Controller {
      * @return Response
      */
     public function create() {
-        //
+//
     }
-    
+
     public function push(PusherManager $pusher) {
         $message = 'Hello world' + rand(0, 1000);
         $pusher->trigger('test-channel', 'new-message', ['message' => $message]);
@@ -46,7 +46,7 @@ class TestController extends Controller {
      * @return Response
      */
     public function store() {
-        //
+//
     }
 
     /**
@@ -56,7 +56,7 @@ class TestController extends Controller {
      * @return Response
      */
     public function show($id) {
-        //
+//
     }
 
     /**
@@ -66,10 +66,10 @@ class TestController extends Controller {
      * @return Response
      */
     public function edit($id) {
-        //
+//
     }
-    
-    public function runTestCommand(){
+
+    public function runTestCommand() {
         \Illuminate\Support\Facades\Artisan::call('turn:resolve');
     }
 
@@ -80,10 +80,11 @@ class TestController extends Controller {
      * @return Response
      */
     public function update($id) {
-        //
+//
     }
 
     public function recount() {
+        
     }
 
     /**
@@ -93,7 +94,7 @@ class TestController extends Controller {
      * @return Response
      */
     public function destroy($id) {
-        //
+//
     }
 
     public function generate() {
@@ -129,10 +130,10 @@ class TestController extends Controller {
         $startX = 0;
         $startY = 0;
         for ($i = 1; $i <= $level; $i++) {
-            for ($j = 1; $j <= $level-$i+1; $j++) {
+            for ($j = 1; $j <= $level - $i + 1; $j++) {
                 $x = $startX + 50 * $j;
                 $y = $startY + 50 * $j;
-                if ($j == $level-$i+1) {
+                if ($j == $level - $i + 1) {
                     $txt = '{"map_x":' . $j . ',"map_y":' . $i . ',"x": ' . $x . ' ,"y": ' . $y . '}],[';
                     if ($i == $level) {
                         $txt = '{"map_x":' . $j . ',"map_y":' . $i . ',"x": ' . $x . ' ,"y": ' . $y . '}]],"routes": [[';
@@ -147,9 +148,9 @@ class TestController extends Controller {
         }
 
         for ($i = 1; $i <= $level; $i++) {
-            for ($j = 1; $j <= $level-$i+1; $j++) {
+            for ($j = 1; $j <= $level - $i + 1; $j++) {
                 $first = true;
-                if ((rand(0, 10) < 7 || $j == 1) && $i != $level && $j != $level-$i+1) {
+                if ((rand(0, 10) < 7 || $j == 1) && $i != $level && $j != $level - $i + 1) {
                     $to = $j;
                     $toLvl = $i + 1;
                     if ($j == 1) {
@@ -161,7 +162,7 @@ class TestController extends Controller {
                         fwrite($file, $txt);
                     }
                 }
-                if ((rand(0, 10) < 6 && $j < $level-$i) && $i != $level) {
+                if ((rand(0, 10) < 6 && $j < $level - $i) && $i != $level) {
                     $to = $j + 1;
                     $toLvl = $i + 1;
                     if ($j == 1 && $first) {
@@ -174,7 +175,7 @@ class TestController extends Controller {
                     }
                 }
 
-                if (rand(0, 10) < 8 && $j != $level-$i+1) {
+                if (rand(0, 10) < 8 && $j != $level - $i + 1) {
                     $to = $j + 1;
                     $toLvl = $i;
                     if ($j == 1 && $first) {
@@ -185,7 +186,7 @@ class TestController extends Controller {
                         fwrite($file, $txt);
                     }
                 }
-                if ($j == $level-$i+1 && $i != $level) {
+                if ($j == $level - $i + 1 && $i != $level) {
                     $txt = '],[';
                     fwrite($file, $txt);
                 }

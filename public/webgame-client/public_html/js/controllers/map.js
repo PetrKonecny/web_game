@@ -1,10 +1,10 @@
 var mapControllers = angular.module('mapControllers', []);
 mapControllers
-        .controller('MapCtrl', ['$scope', '$http', 'Session', 'PlayerData', 'Position', 'Map',
-            function ($scope, $http, Session, PlayerData, Position, Map) {
+        .controller('MapCtrl', ['$scope', '$http', 'Session', 'PlayerData', 'Position', 'Map', 'Army',
+            function ($scope, $http, Session, PlayerData, Position, Map, Army) {
                 $scope.player = PlayerData.getData();
                 $scope.$on('player:updated', function (event, data) {
-                    drawNodes(data.cities, data.armies);
+                    drawNodes(data.cities, data.armies, data.positions);
                     $scope.player = data;
                 });
                 $http.get('/test4')
@@ -19,6 +19,7 @@ mapControllers
                 var popupLayer;
                 var armyLayer;
                 var finder;
+                var selectedArmyId;
                 var nodes = new Array();
                 var connections = new Array();
                 var mainLayer = new paper.Layer();
@@ -89,7 +90,8 @@ mapControllers
                 }
 
                 function drawMinimapScope() {
-                    if(finder != null) finder.remove();
+                    if (finder != null)
+                        finder.remove();
                     var bounds = paper.view.bounds;
                     Map.changePaper(1);
                     finder = new paper.Path();
@@ -103,9 +105,10 @@ mapControllers
                     Map.changePaper(0);
                 }
 
-                function drawNodes(cities, armies) {
+                function drawNodes(cities, armies, positions) {
                     displayCities(cities);
                     displayArmies(armies);
+                    displayPositions(positions);
                     paper.view.draw();
                 }
 
@@ -139,7 +142,6 @@ mapControllers
                         }
 
                     }
-                    paper.project.view.update();
                 }
 
                 var hideRoutes = function (event) {
@@ -212,16 +214,27 @@ mapControllers
                         node.map_x = x;
                         node.map_y = y;
                         node.mapId = id;
+                        node.armyId = armyList[i].Id;
                         node.onClick = function (event) {
                             selection = this;
+                            selectedArmyId = this.armyId;
+                            console.log(selectedArmyId);
                             displayArmyMoves(this);
                         }
-                        if (armyList[i].position.move_to_x != null) {
-                            var moveNode = createMoveNode(armyList[i].position.move_to_x, armyList[i].position.move_to_y);
+                        if (armyList[i].move_to_x != null) {
+                            var moveNode = createMoveNode(armyList[i].move_to_x, armyList[i].move_to_y);
+                            console.log('arrrrows');
                             drawArrow(nodes[y][x].position, moveNode.position);
                         }
                     }
                     mainLayer.activate();
+                }
+                
+                function displayPositions(positions) {
+                    for (i = 0; i < positions.length; i++) {            
+                        var node = nodes[positions[i].y][positions[i].x];
+                        node.fillColor = 'orange';                                        
+                    }
                 }
 
                 function createMoveNode(x, y) {
@@ -333,23 +346,28 @@ mapControllers
                 }
 
                 function moveArmy(x, y) {
-                    var position = new Position();
-                    position.id = selection.mapId;
-                    position.x = x;
-                    position.y = y;
-                    position.$update(function (data) {
+                    var army = new Army();
+                    army.move_to_x = x;
+                    army.move_to_y = y;
+                    army.Id = selectedArmyId;
+                    army.$move({id: army.Id, action: 'move'}, function () {
                         selection = null;
-                        for (i = 0; i < $scope.player.armies.length; i++) {
-                            if ($scope.player.armies[i].position_id === data.id) {
-                                var result = new Object();
-                                result.x = data.x;
-                                result.y = data.y;
-                                result.id = data.id;
-                                $scope.player.armies[i].position = result;
-                                break;
-                            }
-                        }
+
+                        /*
+                         for (i = 0; i < $scope.player.armies.length; i++) {
+                         if ($scope.player.armies[i].position_id === data.id) {
+                         
+                         var result = new Object();
+                         result.x = data.x;
+                         result.y = data.y;
+                         result.id = data.id;
+                         $scope.player.armies[i].position = result;
+                         break;
+                         
+                         }
+                         }*/
                         PlayerData.refreshData();
+
                     }
                     );
                 }

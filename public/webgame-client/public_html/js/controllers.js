@@ -27,7 +27,7 @@ webgameControllers
             }])
         .controller('NotifCtrl', ['$scope', 'PlayerData',
             function ($scope, PlayerData) {
-                $scope.player = PlayerData.getData();
+                $scope.player = PlayerData.getData();    
             }]);
 ;
 ;

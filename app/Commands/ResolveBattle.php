@@ -5,6 +5,7 @@ namespace App\Commands;
 use Log;
 use App\Commands\Command;
 use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Http\Response;
 
 class ResolveBattle extends Command implements SelfHandling {
 
@@ -29,15 +30,29 @@ class ResolveBattle extends Command implements SelfHandling {
      * @return void
      */
     public function handle() {
-        $subjectBefore =  unserialize(serialize($this->subject));
+        Log::info('Trying to handle battle');
+        $subjectBefore = unserialize(serialize($this->subject));
         $targetBefore = unserialize(serialize($this->target));
         $this->attackArmy($this->subject, $this->target);
-        return response()->json([
+        $targetBefore->units;
+        $subjectBefore->units;
+        $response = json_encode(array(
             'targetBefore' => $targetBefore,
             'subjectBefore' => $subjectBefore,
-            'target' => $this->target, 
-            'subject' => $this->subject, 
-            'report' => ['turns' => $this->report]]);
+            'target' => $this->target,
+            'subject' => $this->subject,
+            'report' => array('turns' => $this->report)));
+        $log = new \App\Log();
+        $log->message = $response;
+        $log->save();
+        $notificationBody = array(
+            'battleId' => $log->id,
+            'winner' => 'who cares'
+        );
+        $notification = new \App\Notification();
+        $notification->type = "battle_result";
+        $notification->message = json_encode($notificationBody);
+        $this->subject->player->notifications()->save($notification);
     }
 
     public function attackArmy($army, $army2) {
@@ -59,7 +74,7 @@ class ResolveBattle extends Command implements SelfHandling {
         $units = $army->units;
         $this->turnReport = array();
         foreach ($units as $unit) {
-            if($unit->pivot->Unit_count <= 0){
+            if ($unit->pivot->Unit_count <= 0) {
                 Log::info('Unit is dead, not attacking');
                 continue;
             }
@@ -76,7 +91,7 @@ class ResolveBattle extends Command implements SelfHandling {
                 }
             }
         }
-        array_push($this->report, ['lines' => $this->turnReport,'attackerName'=>$army->Army_name]);
+        array_push($this->report, ['lines' => $this->turnReport, 'attackerName' => $army->Army_name]);
     }
 
     /* Returns preffered target if there is one, if there isn't returns target with most 
@@ -138,13 +153,13 @@ class ResolveBattle extends Command implements SelfHandling {
         $target->pivot->Unit_count = $targetRemainCount;
         Log::info('Returning this result', ['Total number of attackers' => $numberOfAttackers]);
         array_push($this->turnReport, [
-        'subject' => $unit->Name,
-        'target' => $target->Name,
-        'dmg' => $attackerTotalDmg,
-        'subjectCount' => $count,
-        'attacked' => $numberOfAttackers,
-        'targetCountBefore' => $targetCountBfr,
-        'targetCountAfter' => $targetRemainCount
+            'subject' => $unit->Name,
+            'target' => $target->Name,
+            'dmg' => $attackerTotalDmg,
+            'subjectCount' => $count,
+            'attacked' => $numberOfAttackers,
+            'targetCountBefore' => $targetCountBfr,
+            'targetCountAfter' => $targetRemainCount
         ]);
         return $numberOfAttackers;
     }

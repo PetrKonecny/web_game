@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Log;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
-class NotificationController extends Controller {
-
+class LogController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-    public function index() {
+    public function index()
+    {
         //
     }
 
@@ -23,8 +24,9 @@ class NotificationController extends Controller {
      *
      * @return Response
      */
-    public function create() {
-       
+    public function create()
+    {
+        //
     }
 
     /**
@@ -32,8 +34,9 @@ class NotificationController extends Controller {
      *
      * @return Response
      */
-    public function store() {
-        //
+    public function store()
+    {
+ 
     }
 
     /**
@@ -42,8 +45,11 @@ class NotificationController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function show($id) {
-        //
+    public function show($id)
+    {
+        $log = Log::find($id);
+        $log->message = json_decode($log->message,true);
+        return $log;
     }
 
     /**
@@ -52,7 +58,8 @@ class NotificationController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         //
     }
 
@@ -62,7 +69,8 @@ class NotificationController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function update($id) {
+    public function update($id)
+    {
         //
     }
 
@@ -72,8 +80,8 @@ class NotificationController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         //
     }
-
 }

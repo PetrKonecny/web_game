@@ -1,7 +1,14 @@
 <div ng-repeat='notification in player.notifications' class="panel panel-default">
     <div class="panel-body">
         <div class="panel-info">
-            <p><strong>{{notification.message}}</strong></p>                      
+            <div ng-if="notification.type == 'battle_result'">
+                The results of your battle: <br>
+                Winner: {{notification.message.winner}} <br>
+                Details available <a href= "/#/logs/{{ notification.message.battleId}}">here</a>
+            </div>
+            <div ng-if="notification.type == null">
+            <p><strong>{{notification.message}}</strong></p>
+            </div>
         </div>
     </div>
 </div>

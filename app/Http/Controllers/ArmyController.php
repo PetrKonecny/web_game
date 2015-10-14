@@ -138,5 +138,16 @@ class ArmyController extends Controller {
         $command = new ResolveBattle($subject, $target);
         return $command->handle();
     }
-
+    
+    
+    public function move($id, Request $request) {
+        $delay = 30;
+        $army = Army::find($id);
+        $army->move_to_x = $request->input('move_to_x');
+        $army->move_to_y = $request->input('move_to_y');
+        $job = (new \App\Jobs\MoveArmy($army))->delay($delay)->onQueue('moves');
+        $this->dispatch($job);
+        $army->move_at = round(microtime(true)) + $delay;
+        $army->save();
+    }
 }

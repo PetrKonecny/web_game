@@ -48,7 +48,11 @@ class PositionController extends Controller {
      * @return Response
      */
     public function show($id) {
-        return Position::find($id);
+        $position = Position::find($id);
+        $position->player;
+        $position->cities;
+        $position = $this->getArmies($position);
+        return $position;
     }
 
     /**
@@ -105,7 +109,7 @@ class PositionController extends Controller {
                 case 2: $txt = 'tier2';
                     break;
             }
-            $units =  Unit::whereIn('Id', $units[$txt])->with('resource')->get();
+            $units = Unit::whereIn('Id', $units[$txt])->with('resource')->get();
             return \App\CityEffectApplier::modifyUnitPricesByCity($units, $city[0]);
         }
     }

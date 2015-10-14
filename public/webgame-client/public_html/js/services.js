@@ -6,6 +6,9 @@ angular.module('webgameServices', [])
                 },
                 buyUnits: {
                     method: 'PUT'
+                },
+                move: {
+                    method: 'PUT'
                 }
             });
         })
@@ -35,6 +38,14 @@ angular.module('webgameServices', [])
         })
         .factory('City', function ($resource) {
             return $resource('/cities/:id', {id: '@Object_id'}, {
+                update: {
+                    method: 'PUT'
+                }
+            });
+
+        })
+        .factory('Log', function ($resource) {
+            return $resource('/logs/:id', {id: '@Object_id'}, {
                 update: {
                     method: 'PUT'
                 }

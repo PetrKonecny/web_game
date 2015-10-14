@@ -83,9 +83,9 @@ playerControllers
                 function setArmyMoveTimers() {
                     var n = Math.round(new Date().getTime() / 1000);
                     for (i = 0; i < $scope.player.armies.length; i++) {
-                        if ($scope.player.armies[i].position.move_at != null) {
+                        if ($scope.player.armies[i].move_at != null) {
                             $scope.player.armies[i].timer = new Object();
-                            new Countdown($scope.player.armies[i].position.move_at - n, $scope.player.armies[i].timer, PlayerData.refreshData).start();
+                            new Countdown($scope.player.armies[i].move_at - n, $scope.player.armies[i].timer, PlayerData.refreshData).start();
                         }
                     }
                 }

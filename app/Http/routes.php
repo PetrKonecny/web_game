@@ -25,6 +25,7 @@ Route::get('/armies/{id}/fight', 'ArmyController@attack');
 Route::get('/armies/{id}', 'ArmyController@show');
 Route::put('/armies/{id}', 'ArmyController@update');
 Route::put('/armies/{id}/buyUnits', 'ArmyController@buyUnits');
+route::put('/armies/{id}/move', 'ArmyController@move');
 
 
 
@@ -47,10 +48,13 @@ Route::get('/test3', 'TestController@generateMap');
 Route::get('/test4', 'TestController@getMap');
 Route::get('/test5', 'TestController@push');
 Route::get('/test6', 'TestController@runTestCommand');
+Route::get('/test6', 'TestController@spawnTowns');
 
 Route::get('/session', 'PlayerController@showSession');
 Route::post('/login', 'Auth\AuthController@postLogin');
 Route::get('/logout', 'Auth\AuthController@getLogout');
+Route::get('/logs/{id}', 'LogController@show');
+
 
 Route::put('/positions/{id}', 'PositionController@update');
 Route::get('/positions/{id}', 'PositionController@show');
@@ -61,3 +65,5 @@ Route::get('/resources/{id}', 'ResourceController@show');
 Route::get('/queue/recount', 'QueueController@getNextRecount');
 
 Route::get('/notification/test','NotificationController@create');
+
+Route::get('/towns','TownController@index');

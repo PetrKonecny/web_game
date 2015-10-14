@@ -14,10 +14,14 @@ class Position extends Model {
         return $this->hasOne('App\City');
     }
 
-    public function armies() {
+    public function army() {
         return $this->hasOne('App\Army');
     }
-
+    
+    public function player() {
+        return $this->belongsTo('App\User');
+    }
+ 
     public function compare($subject) {
         return ($this->x == $subject->x && $this->y == $subject->y);
     }

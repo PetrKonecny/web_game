@@ -178,17 +178,19 @@ armyControllers
                     }
                 }
             }])
-        .controller('BattleResultCtrl', ['$scope', 'SharedData',
-            function ($scope, SharedData) {
-                $scope.data = SharedData.get();
-                $scope.army = $scope.data.target;
-                $scope.targetBefore = $scope.data.targetBefore;
-                $scope.army2 = $scope.data.subject;
-                $scope.subjectBefore = $scope.data.subjectBefore;
-                $scope.getLostCount = function ($id, $units) {
-                    var result = $units.filter(function (obj) {
-                        return obj.Id == $id;
-                    });
-                    return result[0].pivot.Unit_count;
-                }
+        .controller('BattleResultCtrl', ['$scope', '$routeParams', 'Log',
+            function ($scope, $routeParams, Log) {
+                Log.get({id: $routeParams.id}).$promise.then(function (data) {
+                    $scope.data = data.message;
+                    $scope.army = $scope.data.target;
+                    $scope.targetBefore = $scope.data.targetBefore;
+                    $scope.army2 = $scope.data.subject;
+                    $scope.subjectBefore = $scope.data.subjectBefore;
+                    $scope.getLostCount = function ($id, $units) {
+                        var result = $units.filter(function (obj) {
+                            return obj.Id == $id;
+                        });
+                        return result[0].pivot.Unit_count;
+                    }
+                });
             }]);

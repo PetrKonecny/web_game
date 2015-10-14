@@ -1,5 +1,54 @@
 <h1>Result of the battle</h1>
 {{data}}
-<div class="col-md-6" ng-include src="'partials/unit/list_result.html'"></div>
-<div class="col-md-6" ng-include src="'partials/unit/list_result_1.html'"></div>
-<div class="col-md-12" ng-include src="'partials/info/turn_result.html'"></div>
+<h1>Summary</h1>
+<div class="col-md-6">
+    <h2>{{targetBefore.Army_name}}</h2>
+    <div ng-repeat='unit in targetBefore.units' class="panel panel-default">
+        <div class="panel-body">
+            <div class="panel-info">
+                <p><strong>{{unit.Name}}</strong></p>
+                <p>Count before: {{unit.pivot.Unit_count}} </p>
+                <p>Final count: {{getLostCount(unit.Id, army.units)}} </p>
+                <p>Lost: {{unit.pivot.Unit_count - getLostCount(unit.Id, army.units)}} </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <h2>{{subjectBefore.Army_name}}</h2>
+
+    <div ng-repeat='unit in subjectBefore.units' class="panel panel-default">
+        <div class="panel-body">
+            <div class="panel-info">
+                <p><strong>{{unit.Name}}</strong></p>
+                <p>Count before: {{unit.pivot.Unit_count}} </p>
+                <p>Final count: {{getLostCount(unit.Id, army2.units)}} </p>
+                <p>Lost: {{unit.pivot.Unit_count - getLostCount(unit.Id, army2.units)}} </p>
+            </div>
+        </div>
+    </div>
+</div>
+<h1>Turn report</h1>
+<div class="col-md-12">
+    <div ng-repeat='turn in data.report.turns' class="panel panel-default">
+        <div class="panel-body">
+            <div class="panel-info">
+                <p><strong>
+                        Turn for {{turn.attackerName}}
+                    </strong></p>                      
+                <div ng-repeat='line in turn.lines'>
+                    <p><strong>
+                            {{line.subjectCount}} of
+                            {{line.subject}} attacked 
+                            {{line.targetCountBefore}} of
+                            {{line.target}} for
+                            {{line.dmg}} damage and killed 
+                            {{line.targetCountBefore - line.targetCountAfter}} of them,
+                            {{line.attacked}} of attackers attacked
+                        </strong></p>                      
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

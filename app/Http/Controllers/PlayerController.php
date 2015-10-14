@@ -64,6 +64,10 @@ class PlayerController extends Controller {
         $player->armies;
         $player->cities;
         $player->notifications;
+        $player->positions;
+        foreach($player->notifications as $notification) {
+            $notification->message = json_decode($notification->message);
+        }
         foreach ($player->cities as $city) {
             $city->position;
         }
