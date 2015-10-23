@@ -2,18 +2,7 @@ var mapControllers = angular.module('mapControllers', []);
 mapControllers
         .controller('MapCtrl', ['$scope', '$http', 'Session', 'PlayerData', 'Position', 'Map', 'Army',
             function ($scope, $http, Session, PlayerData, Position, Map, Army) {
-                $scope.player = PlayerData.getData();
-                $scope.$on('player:updated', function (event, data) {
-                    drawNodes(data.cities, data.armies, data.positions);
-                    $scope.player = data;
-                });
-                $http.get('/test4')
-                        .success(function ($data) {
-                            $scope.map = angular.fromJson($data);
-                            drawMap();
-                            PlayerData.broadcastData();
-                        });
-                Map.init();
+
                 var scale = 1;
                 var layers = new Array();
                 var popupLayer;
@@ -22,16 +11,42 @@ mapControllers
                 var selectedArmyId;
                 var nodes = new Array();
                 var connections = new Array();
-                var mainLayer = new paper.Layer();
-
-                if (paper.tool != null)
-                    paper.tool.remove();
-                var tool = new paper.Tool();
                 var selection;
+                var mainLayer;
 
-                tool.onMouseDown = function (event) {
-                    path = new paper.Point();
-                    path.add(event.point);
+
+                $scope.$on('player:updated', function (event, data) {
+                    drawNodes(data.cities, data.armies, data.positions);
+                    $scope.player = data;
+                });
+                $scope.$on('map:loaded', function (event, data) {
+                    console.log('mapLoaded');
+                    $scope.map = data;
+                    drawMap();
+                    PlayerData.broadcastData();
+                });
+
+                Map.init();
+                setUpPaper();
+
+                function setUpPaper() {
+                    mainLayer = new paper.Layer();
+                    if (paper.tool != null)
+                        paper.tool.remove();
+                    var tool = new paper.Tool();
+
+                    tool.onMouseDown = function (event) {
+                        path = new paper.Point();
+                        path.add(event.point);
+                    }
+                    tool.onMouseDrag = function (event) {
+                        path.add(event.point);
+                        var des = center(event.downPoint, event.point);
+                        paper.project.view.center = des;
+                        hideNodes();
+                        hideRoutes();
+                        drawMinimapScope();
+                    }
                 }
 
                 function center(a, b) {
@@ -42,19 +57,9 @@ mapControllers
                     return newCenter;
                 }
 
-                tool.onMouseDrag = function (event) {
-                    path.add(event.point);
-                    var des = center(event.downPoint, event.point);
-                    paper.project.view.center = des;
-                    hideNodes();
-                    hideRoutes();
-                    drawMinimapScope();
-                }
-
                 function drawMap() {
-
                     for (i = 0; i < $scope.map.nodes.length; i++) {
-                        layers.push(new paper.Layer());
+                        //layers.push(new paper.Layer());
                         nodes[i] = new Array();
                         for (j = 0; j < $scope.map.nodes[i].length; j++) {
                             createNode($scope.map.nodes[i][j].x, $scope.map.nodes[i][j].y, j, i);
@@ -63,7 +68,7 @@ mapControllers
 
                     for (i = 0; i < $scope.map.routes.length; i++) {
                         connections[i] = new Array();
-                        layers[i].activate();
+                        //layers[i].activate();
                         for (j = 0; j < $scope.map.routes[i].length; j++) {
                             displayConnection(nodes[i][$scope.map.routes[i][j].from_x - 1 ], nodes[$scope.map.routes[i][j].to_y - 1][$scope.map.routes[i][j].to_x - 1], i);
                         }
@@ -109,6 +114,8 @@ mapControllers
                     displayCities(cities);
                     displayArmies(armies);
                     displayPositions(positions);
+                    hideNodes();
+                    hideRoutes();
                     paper.view.draw();
                 }
 
@@ -117,12 +124,16 @@ mapControllers
                     point.map_x = map_x;
                     point.map_y = map_y;
                     //var circle = symbol.place(point);
-                    var circle = new paper.Path.Circle(point, 15);
-                    circle.position = point;
-                    circle.fillColor = 'black';
-                    circle.map_x = map_x;
-                    circle.map_y = map_y;
-                    nodes[map_y].push(circle);
+                    /*var circle = new paper.Path.Circle(point, 15);
+                     circle.position = point;
+                     circle.fillColor = 'black';*/
+                    point.position = new Object();
+                    point.position.x = point.x;
+                    point.position.y = point.y;
+                    point.fillColor = 'black';
+                    point.map_x = map_x;
+                    point.map_y = map_y;
+                    nodes[map_y].push(point);
                 }
 
                 var hideNodes = function (event) {
@@ -135,12 +146,20 @@ mapControllers
                             if (Math.abs((center.x - node.position.x)) > width
                                     || Math.abs((center.y - node.position.y)) > height)
                             {
-                                node.visible = false;
+                                //node.visible = false;
+                                if (node.circle != null) {
+                                    node.circle.remove();
+                                    node.circle = null;
+                                }
                             } else {
-                                node.visible = true;
+                                if (node.circle == null) {
+                                    var circle = new paper.Path.Circle(node, 15);
+                                    node.circle = circle;
+                                }
+                                node.circle.fillColor = node.fillColor;
+                                //node.visible = true;
                             }
                         }
-
                     }
                 }
 
@@ -154,21 +173,39 @@ mapControllers
                             if (Math.abs((center.x - route.map_start.position.x)) > width
                                     || Math.abs((center.y - route.map_start.position.y)) > height)
                             {
-                                route.visible = false;
+                                //route.visible = false;
+                                if (route.route != null) {
+                                    route.route.remove();
+                                    route.route = null;
+                                }
                             } else {
-                                route.visible = true;
+                                if (route.route == null) {
+                                    route.route = drawRoute(route);
+                                }
                             }
                         }
                     }
                 }
 
-                function displayConnection(start, end, i) {
+                function drawRoute(route) {
                     var myPath = new paper.Path();
                     myPath.strokeColor = 'black';
-                    myPath.add(start.position);
-                    myPath.add(end.position);
+                    myPath.add(route.map_start.position);
+                    myPath.add(route.map_end.position);
+                    return myPath;
+                }
+
+                function displayConnection(start, end, i) {
+                    /*var myPath = new paper.Path();
+                     myPath.strokeColor = 'black';
+                     myPath.add(start.position);
+                     myPath.add(end.position);
+                     myPath.map_start = start;
+                     myPath.map_end = end;*/
+                    var myPath = new Object();
                     myPath.map_start = start;
                     myPath.map_end = end;
+
                     connections[i].push(myPath);
                 }
 
@@ -223,17 +260,16 @@ mapControllers
                         }
                         if (armyList[i].move_to_x != null) {
                             var moveNode = createMoveNode(armyList[i].move_to_x, armyList[i].move_to_y);
-                            console.log('arrrrows');
                             drawArrow(nodes[y][x].position, moveNode.position);
                         }
                     }
                     mainLayer.activate();
                 }
-                
+
                 function displayPositions(positions) {
-                    for (i = 0; i < positions.length; i++) {            
+                    for (i = 0; i < positions.length; i++) {
                         var node = nodes[positions[i].y][positions[i].x];
-                        node.fillColor = 'orange';                                        
+                        node.fillColor = 'orange';
                     }
                 }
 
@@ -371,4 +407,8 @@ mapControllers
                     }
                     );
                 }
+
+                $scope.player = PlayerData.getData();
+                Map.loadMapData();
+
             }])

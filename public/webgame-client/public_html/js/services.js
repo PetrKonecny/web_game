@@ -167,10 +167,13 @@ angular.module('webgameServices', [])
                 broadcastData: broadcastData
             }
         })
-        .factory('Map', function () {
+        .factory('Map', function ($http, $rootScope) {
             var papers;
             var canvas;
-            function init() {     
+            var mapData;
+            var working = false;
+
+            function init() {
                 papers = new Array();
                 canvas = document.getElementById('canvas');
                 paper.setup(canvas);
@@ -180,12 +183,31 @@ angular.module('webgameServices', [])
                 papers.push(paper);
                 paper = papers[0];
             }
-            function changePaper(which){
+            function changePaper(which) {
                 paper = papers[which];
             }
 
+            function loadMapData() {
+                if (working) {
+                    return;
+                }
+                working = true;
+                console.log(mapData);
+                if (mapData != null) {
+                    $rootScope.$broadcast('map:loaded', mapData);
+                    working = false;
+                    return;
+                }
+                $http.get('/test4').success(function ($data) {
+                    mapData = angular.fromJson($data);
+                    $rootScope.$broadcast('map:loaded', mapData);
+                    working = false;
+                });
+            }
+
             return {
-                init: init ,
-                changePaper : changePaper
+                init: init,
+                changePaper: changePaper,
+                loadMapData: loadMapData,
             }
         });
