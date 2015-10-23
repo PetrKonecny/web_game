@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Commands;
+namespace App\Jobs;
 
 use Log;
-use App\Commands\Command;
-use Illuminate\Contracts\Bus\SelfHandling;
-use Illuminate\Http\Response;
 
-class ResolveBattle extends Command implements SelfHandling {
+class ResolveBattle {
 
     private $report = array();
     private $turnReport;
     private $subject;
     private $target;
+    private $winner;
 
     /**
      * Create a new command instance.
@@ -47,12 +45,23 @@ class ResolveBattle extends Command implements SelfHandling {
         $log->save();
         $notificationBody = array(
             'battleId' => $log->id,
-            'winner' => 'who cares'
+            'winner' => $this->getWinnerName()
         );
         $notification = new \App\Notification();
         $notification->type = "battle_result";
         $notification->message = json_encode($notificationBody);
+        $this->saveArmy($this->subject);
+        $this->saveArmy($this->target);
         $this->subject->player->notifications()->save($notification);
+        return $this->winner;
+    }
+
+    public function getWinnerName() {
+        if ($this->winner->player != null) {
+            return $this->winner->player->username;
+        } else {
+            return 'Neutral army';
+        }
     }
 
     public function attackArmy($army, $army2) {
@@ -63,9 +72,14 @@ class ResolveBattle extends Command implements SelfHandling {
             $armyBeforeAttack = unserialize(serialize($army2));
             $this->turn($army, $army2);
             $this->turn($armyBeforeAttack, $army);
-            if ($i > 20) {
+            if ($i > 200) {
                 break;
             }
+        }
+        if ($this->getMostCount($army) == null) {
+            $this->winner = $army2;
+        } else {
+            $this->winner = $army;
         }
     }
 
@@ -162,6 +176,19 @@ class ResolveBattle extends Command implements SelfHandling {
             'targetCountAfter' => $targetRemainCount
         ]);
         return $numberOfAttackers;
+    }
+
+    public function saveArmy($army) {
+        if ($army->player != null || $this->winner->Id == $army->Id) {
+            $army->save();
+            $result = array();
+            foreach ($army->units as $unit) {
+                if($unit->pivot->Unit_count > 0){
+                $result[$unit['Id']] = array('Unit_count' => $unit['pivot']['Unit_count']);
+                }
+            }
+            $army->units()->sync($result);
+        }
     }
 
 }
